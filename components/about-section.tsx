@@ -43,7 +43,7 @@ export function AboutSection() {
           {/* Text Side */}
           <div className={`transition-all duration-1000 ${isVisible ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-12"
             }`}>
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif text-foreground mb-4 tracking-wide">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-sans text-foreground mb-4 tracking-wide">
               Nosotros
             </h2>
 
@@ -70,7 +70,7 @@ export function AboutSection() {
                   <div className="w-12 h-12 flex items-center justify-center bg-primary/10">
                     <feature.icon className="w-6 h-6 text-primary" />
                   </div>
-                  <span className="text-xs tracking-[0.15em] text-muted-foreground font-medium">
+                  <span className="text-xs tracking-[0.2em] text-muted-foreground font-medium uppercase">
                     {feature.label}
                   </span>
                 </div>

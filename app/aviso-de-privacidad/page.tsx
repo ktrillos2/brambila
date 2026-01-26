@@ -43,7 +43,7 @@ export default function AvisoDePrivacidad() {
             <span className="text-primary text-xs font-medium tracking-[0.3em] uppercase">
               Legal
             </span>
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-serif font-bold text-foreground mt-4 mb-4">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-sans font-bold text-foreground mt-4 mb-4">
               Aviso de Privacidad
             </h1>
             <div className="w-16 h-1 bg-primary mx-auto mb-6" />

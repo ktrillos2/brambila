@@ -87,7 +87,7 @@ export function ContactSection() {
             <span className="text-primary text-xs font-medium tracking-[0.3em] uppercase">
               Hablemos
             </span>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif font-bold text-foreground mt-4 mb-6">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-sans font-bold text-foreground mt-4 mb-6">
               ¿Estamos listos para empezar?
             </h2>
             <div className="w-16 h-1 bg-primary mx-auto mb-6" />
@@ -161,8 +161,8 @@ export function ContactSection() {
                     <label
                       htmlFor="name"
                       className={`absolute left-4 transition-all duration-300 pointer-events-none ${focusedField === "name" || formData.name
-                          ? "-top-2.5 text-xs bg-card px-2 text-primary"
-                          : "top-4 text-muted-foreground text-sm"
+                        ? "-top-2.5 text-xs bg-card px-2 text-primary"
+                        : "top-4 text-muted-foreground text-sm"
                         }`}
                     >
                       Nombre completo *
@@ -182,8 +182,8 @@ export function ContactSection() {
                     <label
                       htmlFor="email"
                       className={`absolute left-4 transition-all duration-300 pointer-events-none ${focusedField === "email" || formData.email
-                          ? "-top-2.5 text-xs bg-card px-2 text-primary"
-                          : "top-4 text-muted-foreground text-sm"
+                        ? "-top-2.5 text-xs bg-card px-2 text-primary"
+                        : "top-4 text-muted-foreground text-sm"
                         }`}
                     >
                       Correo electrónico *
@@ -205,8 +205,8 @@ export function ContactSection() {
                   <label
                     htmlFor="phone"
                     className={`absolute left-4 transition-all duration-300 pointer-events-none ${focusedField === "phone" || formData.phone
-                        ? "-top-2.5 text-xs bg-card px-2 text-primary"
-                        : "top-4 text-muted-foreground text-sm"
+                      ? "-top-2.5 text-xs bg-card px-2 text-primary"
+                      : "top-4 text-muted-foreground text-sm"
                       }`}
                   >
                     Teléfono
@@ -226,8 +226,8 @@ export function ContactSection() {
                   <label
                     htmlFor="message"
                     className={`absolute left-4 transition-all duration-300 pointer-events-none ${focusedField === "message" || formData.message
-                        ? "-top-2.5 text-xs bg-card px-2 text-primary"
-                        : "top-4 text-muted-foreground text-sm"
+                      ? "-top-2.5 text-xs bg-card px-2 text-primary"
+                      : "top-4 text-muted-foreground text-sm"
                       }`}
                   >
                     Mensaje *

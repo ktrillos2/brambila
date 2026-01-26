@@ -18,7 +18,7 @@ export default function PropertyDetailPage() {
     if (!property) {
         return (
             <div className="min-h-screen bg-background flex flex-col items-center justify-center">
-                <h1 className="text-2xl font-serif mb-4">Propiedad no encontrada</h1>
+                <h1 className="text-2xl font-sans mb-4">Propiedad no encontrada</h1>
                 <Link href="/" className="text-primary hover:underline">
                     Volver al Inicio
                 </Link>
@@ -54,7 +54,7 @@ export default function PropertyDetailPage() {
                                 <span className="px-4 py-2 bg-primary text-black text-xs font-bold tracking-widest uppercase mb-4 inline-block">
                                     {property.tag}
                                 </span>
-                                <h1 className="text-4xl lg:text-6xl font-sans tracking-wide text-white mb-2 uppercase">
+                                <h1 className="text-3xl md:text-4xl lg:text-5xl font-sans tracking-wide text-white mb-2 uppercase">
                                     {property.title}
                                 </h1>
                                 <div className="flex items-center gap-2 text-white/90">
@@ -63,7 +63,7 @@ export default function PropertyDetailPage() {
                                 </div>
                             </div>
                             <div className="text-left lg:text-right">
-                                <p className="text-4xl lg:text-5xl font-light text-primary">
+                                <p className="text-3xl lg:text-4xl font-light text-primary">
                                     {property.price}
                                 </p>
                                 {property.priceLabel && (

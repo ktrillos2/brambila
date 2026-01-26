@@ -88,7 +88,7 @@ export function PropertiesSection() {
             <span className="text-primary text-xs font-medium tracking-[0.3em] uppercase">
               Inventario 2025
             </span>
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-sans text-foreground mt-4 mb-4 tracking-wide">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-sans text-foreground mt-4 mb-4 tracking-wide">
               Colección{" "}
               <span className="italic text-muted-foreground font-light">Privada</span>
             </h2>

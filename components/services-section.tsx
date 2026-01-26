@@ -55,7 +55,7 @@ export function ServicesSection() {
           <span className="text-primary text-xs font-medium tracking-[0.3em] uppercase">
             Lo que hacemos
           </span>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif text-foreground mt-4 mb-6 tracking-wide">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-sans text-foreground mt-4 mb-6 tracking-wide">
             Nuestros Servicios
           </h2>
           <p className="text-muted-foreground text-lg">
@@ -78,7 +78,7 @@ export function ServicesSection() {
               </div>
 
               {/* Title */}
-              <h3 className="text-xl md:text-2xl font-serif text-foreground mb-4 tracking-wide">
+              <h3 className="text-xl md:text-2xl font-sans text-foreground mb-4 tracking-wide">
                 {service.title}
               </h3>
 
