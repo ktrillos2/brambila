@@ -87,7 +87,7 @@ export function ContactSection() {
             <span className="text-primary text-xs font-medium tracking-[0.3em] uppercase">
               Hablemos
             </span>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-sans font-bold text-foreground mt-4 mb-6">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-sans text-foreground mt-4 mb-6 tracking-wide">
               ¿Estamos listos para empezar?
             </h2>
             <div className="w-16 h-1 bg-primary mx-auto mb-6" />

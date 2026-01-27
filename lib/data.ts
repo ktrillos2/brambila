@@ -7,7 +7,7 @@ export interface Property {
     currency?: string
     tag: "Venta" | "Alquiler"
     status: "Venta" | "Alquiler" // Keeping both for compatibility with existing code until fully refactored
-    type: "Casa" | "Terreno" | "Departamento" | "Comercial"
+    type: "Casa" | "Terreno" | "Departamento" | "Comercial" | "Bodega" | "Local"
     image: string
     images?: string[]
     description: string
@@ -28,6 +28,7 @@ export interface Property {
         west?: string
     }
     features?: string[]
+    video?: string
 }
 
 export const properties: Property[] = [
@@ -54,7 +55,8 @@ export const properties: Property[] = [
         code: "RES-BV-001",
         sector: "Residencial",
         condition: "Excelente",
-        features: ["Jardín", "Terraza", "Vista Panorámica", "Seguridad 24/7"]
+        features: ["Jardín", "Terraza", "Vista Panorámica", "Seguridad 24/7"],
+        video: "https://www.youtube.com/embed/y9j-BL5ocW8" // Generic modern house video
     },
     {
         id: 2,
@@ -174,6 +176,26 @@ export const properties: Property[] = [
         sector: "Turístico",
         condition: "Excelente",
         features: ["Cerca de Playa", "Zona en Desarrollo", "Plusvalía"]
+    },
+    {
+        id: 7,
+        title: "BODEGA INDUSTRIAL NORTE",
+        location: "Medellín, Antioquia",
+        price: "$8.500M",
+        currency: "COP",
+        tag: "Venta",
+        status: "Venta",
+        type: "Bodega",
+        image: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=2070&auto=format&fit=crop",
+        images: [
+            "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=2070&auto=format&fit=crop"
+        ],
+        description: "Bodega industrial de gran capacidad con oficinas integradas y patio de maniobras.",
+        area: "1200 M²",
+        code: "BOD-IND-007",
+        sector: "Industrial",
+        condition: "Nueva",
+        features: ["Altura 12m", "Muelle de Carga", "Oficinas", "Trifásica"]
     }
 ]
 

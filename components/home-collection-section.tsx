@@ -36,7 +36,7 @@ export function HomeCollectionSection() {
                             Curaduría Exclusiva
                         </h3>
                         <h2 className="text-4xl md:text-5xl font-sans tracking-wide">
-                            Colección <span className="text-muted-foreground font-script italic">Privada</span>
+                            Colección <span className="text-muted-foreground italic font-light">Privada</span>
                         </h2>
                     </div>
 

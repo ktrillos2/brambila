@@ -4,7 +4,7 @@ import { useState } from "react"
 import { useParams } from "next/navigation"
 import Image from "next/image"
 import Link from "next/link"
-import { ArrowLeft, MapPin, Bed, Bath, Maximize, LandPlot, Ruler, Compass, ChevronRight, X } from "lucide-react"
+import { ArrowLeft, MapPin, Bed, Bath, Maximize, LandPlot, Ruler, Compass, ChevronRight, X, Play } from "lucide-react"
 import useEmblaCarousel from "embla-carousel-react"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
@@ -14,6 +14,7 @@ export default function PropertyDetailPage() {
     const params = useParams()
     const id = Number(params?.id)
     const property = getPropertyById(id)
+    const [showVideo, setShowVideo] = useState(false)
 
     if (!property) {
         return (
@@ -147,6 +148,31 @@ export default function PropertyDetailPage() {
                             </div>
                         )}
 
+                        {/* Video Section */}
+                        {property.video && (
+                            <div className="mb-16">
+                                <h2 className="text-2xl font-sans mb-6 uppercase tracking-wide">Video Recorrido</h2>
+                                <div
+                                    className="relative aspect-video w-full cursor-pointer group overflow-hidden rounded-lg"
+                                    onClick={() => setShowVideo(true)}
+                                >
+                                    <Image
+                                        src={property.image}
+                                        alt={`Video de ${property.title}`}
+                                        fill
+                                        className="object-cover group-hover:scale-105 transition-transform duration-700"
+                                    />
+                                    <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors flex items-center justify-center">
+                                        <div className="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                                            <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center shadow-lg">
+                                                <Play className="w-8 h-8 text-black fill-black ml-1" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
                         {/* Gallery Section */}
                         {property.images && property.images.length > 0 && (
                             <div className="mb-16">
@@ -203,6 +229,37 @@ export default function PropertyDetailPage() {
                 </div>
             </div>
             <Footer />
+
+            {/* Video Modal */}
+            {showVideo && property.video && (
+                <div
+                    className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 md:p-8 animate-in fade-in duration-300"
+                    onClick={() => setShowVideo(false)}
+                >
+                    <button
+                        className="absolute top-6 right-6 text-white/70 hover:text-white transition-colors z-50"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            setShowVideo(false);
+                        }}
+                    >
+                        <X className="w-8 h-8" />
+                    </button>
+
+                    <div
+                        className="relative w-full max-w-5xl aspect-video bg-black rounded-lg overflow-hidden shadow-2xl border border-white/10"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <iframe
+                            src={`${property.video}?autoplay=1`}
+                            title={property.title}
+                            className="w-full h-full"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                        />
+                    </div>
+                </div>
+            )}
         </main>
     )
 }

@@ -103,8 +103,8 @@ export function Hero() {
               }
             }}
             className={`h-1 transition-all duration-500 ${index === currentSlide
-                ? "w-8 bg-primary"
-                : "w-4 bg-white/30 hover:bg-white/50"
+              ? "w-8 bg-primary"
+              : "w-4 bg-white/30 hover:bg-white/50"
               }`}
             aria-label={`Ir a slide ${index + 1}`}
           />
@@ -120,7 +120,7 @@ export function Hero() {
 
         {/* Main Title */}
         <h1 className="text-center mb-4">
-          <span className="block font-serif text-6xl md:text-8xl lg:text-9xl text-white font-normal tracking-wide drop-shadow-2xl animate-fade-in-up animation-delay-100">
+          <span className="block font-sans text-6xl md:text-8xl lg:text-9xl text-white font-bold tracking-wide drop-shadow-2xl animate-fade-in-up animation-delay-100">
             Brambila&apos;s
           </span>
           <span

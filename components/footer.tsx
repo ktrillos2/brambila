@@ -41,7 +41,7 @@ export function Footer() {
       <button
         type="button"
         onClick={scrollToTop}
-        className={`fixed bottom-14 right-8 w-12 h-12 bg-primary text-primary-foreground flex items-center justify-center z-50 transition-all duration-500 hover:bg-primary/90 hover:scale-110 ${showScrollTop ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4 pointer-events-none"
+        className={`fixed bottom-14 left-4 md:left-8 w-12 h-12 bg-primary text-primary-foreground flex items-center justify-center z-50 transition-all duration-500 hover:bg-primary/90 hover:scale-110 ${showScrollTop ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4 pointer-events-none"
           }`}
         aria-label="Volver arriba"
       >
