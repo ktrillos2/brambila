@@ -3,7 +3,7 @@
 import * as React from "react"
 import Image from "next/image"
 import useEmblaCarousel from "embla-carousel-react"
-import { ArrowLeft, ArrowRight, Bed, Bath, Maximize } from "lucide-react"
+import { ArrowLeft, ArrowRight, Bed, Bath, Maximize, Layers } from "lucide-react"
 
 import { properties as allProperties, Property } from "@/lib/data"
 import Link from "next/link"
@@ -127,7 +127,14 @@ export function HomeCollectionSection() {
                                                 <div className="flex flex-col items-center gap-1">
                                                     <Maximize className="w-5 h-5 text-primary" />
                                                     <span className="text-lg">{property.area}</span>
-                                                    <span className="text-[10px] text-white/70 uppercase">Área</span>
+                                                    <span className="text-[10px] text-white/70 uppercase">Const</span>
+                                                </div>
+                                            )}
+                                            {(property.levels !== undefined && property.levels > 0) && (
+                                                <div className="flex flex-col items-center gap-1">
+                                                    <Layers className="w-5 h-5 text-primary" />
+                                                    <span className="text-lg">{property.levels}</span>
+                                                    <span className="text-[10px] text-white/70 uppercase">Nivs</span>
                                                 </div>
                                             )}
                                         </div>

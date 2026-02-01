@@ -13,8 +13,9 @@ export interface Property {
     description: string
     bedrooms?: number
     bathrooms?: number
-    area?: string
-    landArea?: string
+    area?: string // Construction area
+    landArea?: string // Land/Terrain area
+    levels?: number // Number of levels/stories
     featured?: boolean
     // Extended details
     code?: string
@@ -51,10 +52,12 @@ export const properties: Property[] = [
         bedrooms: 5,
         bathrooms: 6,
         area: "650 M²",
+        landArea: "800 M²",
         featured: true,
         code: "RES-BV-001",
         sector: "Residencial",
         condition: "Excelente",
+        levels: 2,
         features: ["Jardín", "Terraza", "Vista Panorámica", "Seguridad 24/7"],
         video: "https://www.youtube.com/embed/y9j-BL5ocW8" // Generic modern house video
     },
@@ -77,9 +80,11 @@ export const properties: Property[] = [
         bedrooms: 3,
         bathrooms: 3,
         area: "320 M²",
+        landArea: "320 M²",
         code: "PENT-SK-002",
         sector: "Residencial",
         condition: "Nuevo",
+        levels: 1,
         features: ["Jacuzzi", "Gimnasio", "Piscina", "Domótica"]
     },
     {
@@ -100,9 +105,11 @@ export const properties: Property[] = [
         bedrooms: 1,
         bathrooms: 2,
         area: "140 M²",
+        landArea: "140 M²",
         code: "LOFT-IND-003",
         sector: "Residencial",
         condition: "Remodelado",
+        levels: 2,
         features: ["Doble Altura", "Diseño Industrial", "Ubicación Premium"]
     },
     {
@@ -123,9 +130,11 @@ export const properties: Property[] = [
         bedrooms: 4,
         bathrooms: 4,
         area: "450 M²",
+        landArea: "2,500 M²",
         code: "CAMP-RIO-004",
         sector: "Campestre",
         condition: "Buena",
+        levels: 1,
         features: ["Espacios Verdes", "Privacidad", "Árboles Frutales"]
     },
     {
@@ -154,6 +163,7 @@ export const properties: Property[] = [
             east: "1.150 m",
             west: "1,038.67 m"
         },
+        levels: 0,
         features: ["Servicios Básicos", "Escrituración Inmediata", "Acceso Carretera"]
     },
     {
@@ -175,6 +185,7 @@ export const properties: Property[] = [
         code: "TER-BAR-006",
         sector: "Turístico",
         condition: "Excelente",
+        levels: 0,
         features: ["Cerca de Playa", "Zona en Desarrollo", "Plusvalía"]
     },
     {
@@ -192,9 +203,11 @@ export const properties: Property[] = [
         ],
         description: "Bodega industrial de gran capacidad con oficinas integradas y patio de maniobras.",
         area: "1200 M²",
+        landArea: "1500 M²",
         code: "BOD-IND-007",
         sector: "Industrial",
         condition: "Nueva",
+        levels: 2,
         features: ["Altura 12m", "Muelle de Carga", "Oficinas", "Trifásica"]
     }
 ]

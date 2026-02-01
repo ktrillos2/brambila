@@ -4,7 +4,7 @@ import React from "react"
 
 import Image from "next/image"
 import Link from "next/link"
-import { MapPin, Bed, Bath, Maximize, LandPlot, X, ChevronLeft, ChevronRight } from "lucide-react"
+import { MapPin, Bed, Bath, Maximize, LandPlot, Layers, X, ChevronLeft, ChevronRight } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 
 import { properties as allProperties, Property } from "@/lib/data"
@@ -328,7 +328,15 @@ export function PropertiesSection() {
                         {(property.area || property.landArea) && (
                           <div className="flex flex-col items-center gap-1">
                             <span className="text-lg">{property.area || property.landArea}</span>
-                            <span className="text-[10px] text-white/70 uppercase">Área</span>
+                            <span className="text-[10px] text-white/70 uppercase">
+                              {property.area ? "Const" : "Terr"}
+                            </span>
+                          </div>
+                        )}
+                        {(property.levels !== undefined && property.levels > 0) && (
+                          <div className="flex flex-col items-center gap-1">
+                            <span className="text-lg">{property.levels}</span>
+                            <span className="text-[10px] text-white/70 uppercase">Nivs</span>
                           </div>
                         )}
                       </div>
