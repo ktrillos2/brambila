@@ -3,19 +3,50 @@
 import Image from "next/image"
 import { Users, Heart, Star, Shield } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
+import { client } from "@/sanity/lib/client"
+import { ABOUT_QUERY } from "@/sanity/lib/queries"
 
-const features = [
-  { icon: Users, label: "RED DE EXPERTOS" },
-  { icon: Heart, label: "TRATO HUMANO" },
-  { icon: Star, label: "SERVICIO EXCEPCIONAL" },
-  { icon: Shield, label: "ALIADO CONFIABLE" }
-]
+type AboutData = {
+  title: string
+  description1: string
+  description2: string
+  features: {
+    label: string
+    icon: string
+  }[]
+  image: string
+}
+
+// Icon mapping
+const iconMap: Record<string, any> = {
+  Users,
+  Heart,
+  Star,
+  Shield
+}
 
 export function AboutSection() {
   const [isVisible, setIsVisible] = useState(false)
+  const [data, setData] = useState<AboutData | null>(null)
   const sectionRef = useRef<HTMLElement>(null)
 
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const result = await client.fetch(ABOUT_QUERY)
+        if (result) {
+          setData(result)
+        }
+      } catch (error) {
+        console.error("Error fetching about data:", error)
+      }
+    }
+    fetchData()
+  }, [])
+
+  useEffect(() => {
+    if (!data) return
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -30,13 +61,15 @@ export function AboutSection() {
     }
 
     return () => observer.disconnect()
-  }, [])
+  }, [data])
+
+  if (!data) return null
 
   return (
     <section
       ref={sectionRef}
       id="nosotros"
-      className="py-20 md:py-32 bg-background overflow-hidden"
+      className="py-10 md:py-20 bg-background overflow-hidden"
     >
       <div className="container mx-auto px-6 md:px-12 lg:px-20">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-start">
@@ -44,37 +77,40 @@ export function AboutSection() {
           <div className={`transition-all duration-1000 ${isVisible ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-12"
             }`}>
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-sans text-foreground mb-4 tracking-wide">
-              Nosotros
+              {data.title || "Nosotros"}
             </h2>
 
             {/* Gold underline */}
             <div className="w-20 h-1 bg-primary mb-10" />
 
-            <p className="text-muted-foreground text-lg leading-relaxed mb-6">
-              Estamos ubicados en el estado de <span className="text-foreground font-semibold">Jalisco, México</span>. Somos una inmobiliaria que cuenta con una red de asesores expertos, con el compromiso de brindar un trato humano y un servicio excepcional a todos nuestros clientes.
+            <p className="text-muted-foreground text-lg leading-relaxed mb-6 whitespace-pre-wrap">
+              {data.description1}
             </p>
 
-            <p className="text-muted-foreground text-lg leading-relaxed mb-12">
-              Nos esforzamos cada día para ser un aliado confiable y guiarte durante todo el proceso de comprar, vender o rentar un inmueble.
+            <p className="text-muted-foreground text-lg leading-relaxed mb-12 whitespace-pre-wrap">
+              {data.description2}
             </p>
 
             {/* Features Grid */}
             <div className="grid grid-cols-2 gap-6">
-              {features.map((feature, index) => (
-                <div
-                  key={feature.label}
-                  className={`flex items-center gap-4 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-                    }`}
-                  style={{ transitionDelay: `${300 + index * 100}ms` }}
-                >
-                  <div className="w-12 h-12 flex items-center justify-center bg-primary/10">
-                    <feature.icon className="w-6 h-6 text-primary" />
+              {data.features?.map((feature, index) => {
+                const IconComponent = iconMap[feature.icon] || Star
+                return (
+                  <div
+                    key={feature.label}
+                    className={`flex items-center gap-4 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+                      }`}
+                    style={{ transitionDelay: `${300 + index * 100}ms` }}
+                  >
+                    <div className="w-12 h-12 flex items-center justify-center bg-primary/10">
+                      <IconComponent className="w-6 h-6 text-primary" />
+                    </div>
+                    <span className="text-xs tracking-[0.2em] text-muted-foreground font-medium uppercase">
+                      {feature.label}
+                    </span>
                   </div>
-                  <span className="text-xs tracking-[0.2em] text-muted-foreground font-medium uppercase">
-                    {feature.label}
-                  </span>
-                </div>
-              ))}
+                )
+              })}
             </div>
           </div>
 
@@ -89,7 +125,7 @@ export function AboutSection() {
 
               <div className="relative aspect-[4/3] overflow-hidden grayscale hover:grayscale-0 transition-all duration-700">
                 <Image
-                  src="https://images.unsplash.com/photo-1556761175-b413da4baf72?q=80&w=2074&auto=format&fit=crop"
+                  src={data.image || "https://images.unsplash.com/photo-1556761175-b413da4baf72?q=80&w=2074&auto=format&fit=crop"}
                   alt="Equipo Brambila's Inmobiliaria"
                   fill
                   className="object-cover"

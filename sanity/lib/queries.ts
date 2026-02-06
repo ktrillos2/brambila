@@ -131,3 +131,23 @@ export const PROPERTY_CONFIGS_QUERY = groq`*[_type == "propertyConfigs"][0]{
   propertyTypes,
   amenities
 }`;
+
+export const ABOUT_QUERY = groq`*[_type == "about"][0]{
+  title,
+  description1,
+  description2,
+  features[]{
+    label,
+    icon
+  },
+  "image": image.asset->url
+}`;
+
+export const PHILOSOPHY_QUERY = groq`*[_type == "philosophy"][0]{
+  title,
+  mission,
+  vision,
+  values,
+  quote,
+  "image": image.asset->url
+}`;

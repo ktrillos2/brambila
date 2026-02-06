@@ -3,19 +3,40 @@
 import Image from "next/image"
 import { Check } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
+import { client } from "@/sanity/lib/client"
+import { PHILOSOPHY_QUERY } from "@/sanity/lib/queries"
 
-const values = [
-  "Calidad",
-  "Seguridad",
-  "Honestidad",
-  "Transparencia"
-]
+type PhilosophyData = {
+  title: string
+  mission: string
+  vision: string
+  values: string[]
+  quote: string
+  image: string
+}
 
 export function PhilosophySection() {
   const [isVisible, setIsVisible] = useState(false)
+  const [data, setData] = useState<PhilosophyData | null>(null)
   const sectionRef = useRef<HTMLElement>(null)
 
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const result = await client.fetch(PHILOSOPHY_QUERY)
+        if (result) {
+          setData(result)
+        }
+      } catch (error) {
+        console.error("Error fetching philosophy data:", error)
+      }
+    }
+    fetchData()
+  }, [])
+
+  useEffect(() => {
+    if (!data) return
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -30,7 +51,9 @@ export function PhilosophySection() {
     }
 
     return () => observer.disconnect()
-  }, [])
+  }, [data])
+
+  if (!data) return null
 
   return (
     <section
@@ -49,7 +72,7 @@ export function PhilosophySection() {
               QUIÉNES SOMOS
             </span>
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-sans text-white mb-16 tracking-wide leading-tight">
-              NUESTRA FILOSOFÍA
+              {data.title || "NUESTRA FILOSOFÍA"}
             </h2>
 
             {/* Misión */}
@@ -57,9 +80,8 @@ export function PhilosophySection() {
               <h3 className="text-lg font-sans text-white mb-4 tracking-widest uppercase">
                 MISIÓN
               </h3>
-              <p className="text-white/60 text-lg leading-relaxed font-light">
-                <span className="text-[#D4AF37] font-medium">Inmobiliaria</span> es una empresa donde la confianza y la tranquilidad son primero.
-                Comprometidos en brindar protección integral mediante nuestros servicios inmobiliarios.
+              <p className="text-white/60 text-lg leading-relaxed font-light whitespace-pre-wrap">
+                {data.mission}
               </p>
             </div>
 
@@ -68,9 +90,8 @@ export function PhilosophySection() {
               <h3 className="text-lg font-sans text-white mb-4 tracking-widest uppercase">
                 VISIÓN
               </h3>
-              <p className="text-white/60 text-lg leading-relaxed font-light">
-                Estar dentro de las mejores opciones inmobiliarias en el país, donde el cliente confíe que su
-                patrimonio y tranquilidad están en buenas manos.
+              <p className="text-white/60 text-lg leading-relaxed font-light whitespace-pre-wrap">
+                {data.vision}
               </p>
             </div>
 
@@ -80,7 +101,7 @@ export function PhilosophySection() {
                 VALORES
               </h3>
               <div className="grid grid-cols-2 gap-x-8 gap-y-4">
-                {values.map((value, index) => (
+                {data.values?.map((value) => (
                   <div
                     key={value}
                     className="flex items-center gap-3"
@@ -99,7 +120,7 @@ export function PhilosophySection() {
             {/* Main Image */}
             <div className="relative h-full w-full overflow-hidden">
               <Image
-                src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop"
+                src={data.image || "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop"}
                 alt="Arquitectura moderna"
                 fill
                 className="object-cover"
@@ -112,8 +133,8 @@ export function PhilosophySection() {
             <div className="absolute bottom-12 -left-12 right-12 md:right-auto md:left-8 w-auto md:w-[90%] bg-[#0f0f0f]/95 backdrop-blur-sm p-8 border border-white/5 shadow-2xl">
               <span className="text-4xl text-[#D4AF37] font-sans leading-none block mb-4">“</span>
 
-              <p className="text-white font-sans italic text-lg lg:text-xl leading-relaxed mb-6 tracking-wide">
-                SU PATRIMONIO Y TRANQUILIDAD ESTÁN EN BUENAS MANOS.
+              <p className="text-white font-sans italic text-lg lg:text-xl leading-relaxed mb-6 tracking-wide whitespace-pre-wrap">
+                {data.quote}
               </p>
 
               <span className="text-[10px] tracking-[0.3em] text-white/40 uppercase block">
