@@ -2,13 +2,44 @@
 
 import Link from "next/link"
 import Image from "next/image"
-import { Phone, Mail, Facebook, Instagram, MessageCircle, ArrowUp, Heart } from "lucide-react"
+import { Phone, Mail, Facebook, Instagram, Twitter, Linkedin, Youtube, ArrowUp, Heart, Link as LinkIcon } from "lucide-react"
 import { useEffect, useState } from "react"
+import { client } from "@/sanity/lib/client"
+import { GLOBAL_CONFIG_QUERY } from "@/sanity/lib/queries"
+
+type SocialLink = {
+  platform: string;
+  url: string;
+}
+
+type GlobalConfig = {
+  siteName: string;
+  logo: string;
+  logoFooter: string;
+  email: string;
+  phone: string;
+  whatsapp: string;
+  address: string;
+  footerText: string;
+  socialLinks: SocialLink[];
+}
 
 export function Footer() {
   const [showScrollTop, setShowScrollTop] = useState(false)
+  const [config, setConfig] = useState<GlobalConfig | null>(null)
 
   useEffect(() => {
+    const fetchConfig = async () => {
+      try {
+        const data = await client.fetch(GLOBAL_CONFIG_QUERY)
+        setConfig(data)
+      } catch (error) {
+        console.error("Failed to fetch global config:", error)
+      }
+    }
+
+    fetchConfig()
+
     const handleScroll = () => {
       setShowScrollTop(window.scrollY > 500)
     }
@@ -29,10 +60,18 @@ export function Footer() {
     { label: "Contacto", href: "#contacto" },
   ]
 
-  const socialLinks = [
-    { icon: Facebook, href: "#", label: "Facebook" },
-    { icon: Instagram, href: "#", label: "Instagram" },
-  ]
+  const getSocialIcon = (platform: string) => {
+    switch (platform.toLowerCase()) {
+      case 'facebook': return Facebook
+      case 'instagram': return Instagram
+      case 'twitter': return Twitter
+      case 'linkedin': return Linkedin
+      case 'youtube': return Youtube
+      default: return LinkIcon
+    }
+  }
+
+  if (!config) return null // Or a loading skeleton
 
   return (
     <footer className="bg-card border-t border-border relative">
@@ -55,30 +94,30 @@ export function Footer() {
             <Link href="/" className="flex items-center mb-6">
               <div className="relative w-48 h-16">
                 <Image
-                  src="/logo-brambilas.png"
-                  alt="Brambila's Inmobiliaria"
+                  src={config.logoFooter || "/logo-brambilas.png"}
+                  alt={config.siteName || "Brambila's Inmobiliaria"}
                   fill
                   className="object-contain"
                 />
               </div>
             </Link>
             <p className="text-muted-foreground text-sm mb-6 leading-relaxed">
-              Tu aliado confiable en bienes raíces en Jalisco, México. Más de 10 años de experiencia nos respaldan.
+              {config.footerText}
             </p>
             <div className="space-y-3">
               <a
-                href="tel:+523213875653"
+                href={`tel:${config.phone?.replace(/\s+/g, '')}`}
                 className="flex items-center gap-3 text-muted-foreground hover:text-primary transition-colors text-sm group/link"
               >
                 <Phone className="h-4 w-4 group-hover/link:scale-110 transition-transform" />
-                (321) 387 56 53
+                {config.phone}
               </a>
               <a
-                href="mailto:brambilasinmobiliaria@gmail.com"
+                href={`mailto:${config.email}`}
                 className="flex items-center gap-3 text-muted-foreground hover:text-primary transition-colors text-sm break-all group/link"
               >
                 <Mail className="h-4 w-4 flex-shrink-0 group-hover/link:scale-110 transition-transform" />
-                brambilasinmobiliaria@gmail.com
+                {config.email}
               </a>
             </div>
           </div>
@@ -130,18 +169,21 @@ export function Footer() {
           <div>
             <h3 className="text-foreground font-semibold mb-6 text-sm tracking-wider uppercase">Síguenos</h3>
             <div className="flex gap-3">
-              {socialLinks.map((social) => (
-                <a
-                  key={social.label}
-                  href={social.href}
-                  target={social.href.startsWith("http") ? "_blank" : undefined}
-                  rel={social.href.startsWith("http") ? "noopener noreferrer" : undefined}
-                  className="w-12 h-12 border border-border flex items-center justify-center text-muted-foreground hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-300 group"
-                  aria-label={social.label}
-                >
-                  <social.icon className="h-5 w-5 group-hover:scale-110 transition-transform" />
-                </a>
-              ))}
+              {config.socialLinks?.map((social) => {
+                const Icon = getSocialIcon(social.platform)
+                return (
+                  <a
+                    key={social.platform}
+                    href={social.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-12 h-12 border border-border flex items-center justify-center text-muted-foreground hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-300 group"
+                    aria-label={social.platform}
+                  >
+                    <Icon className="h-5 w-5 group-hover:scale-110 transition-transform" />
+                  </a>
+                )
+              })}
             </div>
 
             {/* Newsletter or CTA */}
@@ -162,12 +204,12 @@ export function Footer() {
         <div className="py-6 border-t border-border">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-muted-foreground text-sm text-center md:text-left">
-              © 2026 Brambila´s Inmobiliaria ®. Todos los derechos reservados.
+              © {new Date().getFullYear()} {config.siteName}. Todos los derechos reservados.
             </p>
             <div className="flex items-center gap-4">
               <p className="text-muted-foreground text-sm flex items-center gap-2">
                 <span className="w-2 h-2 bg-primary rounded-full animate-pulse" />
-                Jalisco, México
+                {config.address}
               </p>
               <span className="hidden md:inline text-muted-foreground">|</span>
               <a
@@ -175,6 +217,7 @@ export function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-muted-foreground text-sm flex items-center gap-1.5 cursor-pointer hover:text-white transition-colors"
+                style={{ cursor: 'pointer' }}
               >
                 Desarrollado por K&T
                 <Heart className="w-3.5 h-3.5 text-white fill-white" />

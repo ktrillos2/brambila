@@ -4,12 +4,31 @@ import { useState, useEffect } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { Menu, X } from "lucide-react"
+import { client } from "@/sanity/lib/client"
+import { GLOBAL_CONFIG_QUERY } from "@/sanity/lib/queries"
+
+type GlobalConfig = {
+  siteName: string;
+  logo: string;
+}
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
+  const [config, setConfig] = useState<GlobalConfig | null>(null)
 
   useEffect(() => {
+    const fetchConfig = async () => {
+      try {
+        const data = await client.fetch(GLOBAL_CONFIG_QUERY)
+        setConfig(data)
+      } catch (error) {
+        console.error("Failed to fetch global config:", error)
+      }
+    }
+
+    fetchConfig()
+
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50)
     }
@@ -34,8 +53,8 @@ export function Header() {
           <Link href="/" className="flex items-center gap-3">
             <div className="relative w-32 h-12 md:w-40 md:h-14">
               <Image
-                src="/logo-brambilas.png"
-                alt="Brambila's Inmobiliaria"
+                src={config?.logo || "/logo-brambilas.png"}
+                alt={config?.siteName || "Brambila's Inmobiliaria"}
                 fill
                 className="object-contain"
                 priority
