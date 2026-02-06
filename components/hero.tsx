@@ -115,7 +115,7 @@ export function Hero() {
       <div className="relative z-10 h-full flex flex-col items-center justify-center px-6 md:px-12 lg:px-20">
         {/* Small Tagline */}
         <p className="text-primary text-xs md:text-sm tracking-[0.4em] mb-8 text-center animate-fade-in-up font-medium">
-          ARQUITECTURA & ESTILO DE VIDA
+          Compra, Vende, Renta... profesionales expertos en Bienes Raíces
         </p>
 
         {/* Main Title */}
@@ -123,16 +123,10 @@ export function Hero() {
           <span className="block font-sans text-6xl md:text-8xl lg:text-9xl text-white font-bold tracking-wide drop-shadow-2xl animate-fade-in-up animation-delay-100">
             Brambila&apos;s
           </span>
-          <span
-            className="block text-4xl md:text-6xl lg:text-7xl font-light tracking-[0.2em] mt-4 animate-fade-in-up animation-delay-200"
-            style={{
-              color: 'transparent',
-              WebkitTextStroke: '1.5px rgba(255,255,255,0.5)',
-              textShadow: '0 0 60px rgba(255,255,255,0.1)'
-            }}
-          >
+          <span className="block font-sans text-4xl md:text-6xl lg:text-7xl text-white font-bold tracking-wide drop-shadow-2xl animate-fade-in-up animation-delay-100">
             INMOBILIARIA
           </span>
+
         </h1>
 
         {/* Tagline */}

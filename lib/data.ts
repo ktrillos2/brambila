@@ -30,6 +30,7 @@ export interface Property {
     }
     features?: string[]
     video?: string
+    googleMapsUrl?: string
 }
 
 export const properties: Property[] = [
@@ -59,7 +60,8 @@ export const properties: Property[] = [
         condition: "Excelente",
         levels: 2,
         features: ["Jardín", "Terraza", "Vista Panorámica", "Seguridad 24/7"],
-        video: "https://www.youtube.com/embed/y9j-BL5ocW8" // Generic modern house video
+        video: "https://www.youtube.com/embed/y9j-BL5ocW8", // Generic modern house video
+        googleMapsUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.521260322283!2d-75.56359!3d6.2088!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e4428dfb80fad05%3A0x42137cfcc7b53b56!2sMedell%C3%ADn%2C%20Antioquia!5e0!3m2!1ses!2sco!4v1650000000000!5m2!1ses!2sco"
     },
     {
         id: 2,
@@ -85,7 +87,8 @@ export const properties: Property[] = [
         sector: "Residencial",
         condition: "Nuevo",
         levels: 1,
-        features: ["Jacuzzi", "Gimnasio", "Piscina", "Domótica"]
+        features: ["Jacuzzi", "Gimnasio", "Piscina", "Domótica"],
+        googleMapsUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15865.321683437146!2d-75.5756!3d6.2163!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e44282a57861937%3A0x6734c5628b0313!2sEl%20Poblado%2C%20Medell%C3%ADn%2C%20Antioquia!5e0!3m2!1ses!2sco!4v1650000000000!5m2!1ses!2sco"
     },
     {
         id: 3,
@@ -110,7 +113,8 @@ export const properties: Property[] = [
         sector: "Residencial",
         condition: "Remodelado",
         levels: 2,
-        features: ["Doble Altura", "Diseño Industrial", "Ubicación Premium"]
+        features: ["Doble Altura", "Diseño Industrial", "Ubicación Premium"],
+        googleMapsUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.3!2d-75.568!3d6.212!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e442828b8123456%3A0x123456789abcdef!2sProvenza%2C%20Medell%C3%ADn!5e0!3m2!1ses!2sco!4v1650000000000!5m2!1ses!2sco"
     },
     {
         id: 4,
@@ -135,7 +139,8 @@ export const properties: Property[] = [
         sector: "Campestre",
         condition: "Buena",
         levels: 1,
-        features: ["Espacios Verdes", "Privacidad", "Árboles Frutales"]
+        features: ["Espacios Verdes", "Privacidad", "Árboles Frutales"],
+        googleMapsUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15867.1!2d-75.372!3d6.155!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e469fd8c8123456%3A0x123456789abcdef!2sRionegro%2C%20Antioquia!5e0!3m2!1ses!2sco!4v1650000000000!5m2!1ses!2sco"
     },
     {
         id: 5,
@@ -164,7 +169,8 @@ export const properties: Property[] = [
             west: "1,038.67 m"
         },
         levels: 0,
-        features: ["Servicios Básicos", "Escrituración Inmediata", "Acceso Carretera"]
+        features: ["Servicios Básicos", "Escrituración Inmediata", "Acceso Carretera"],
+        googleMapsUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14995.1!2d-104.380!3d19.780!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8424d6789abcdef0%3A0x123456789abcdef!2sEl%20Mentidero%2C%20Jalisco!5e0!3m2!1ses!2smx!4v1650000000000!5m2!1ses!2smx"
     },
     {
         id: 6,
@@ -186,7 +192,8 @@ export const properties: Property[] = [
         sector: "Turístico",
         condition: "Excelente",
         levels: 0,
-        features: ["Cerca de Playa", "Zona en Desarrollo", "Plusvalía"]
+        features: ["Cerca de Playa", "Zona en Desarrollo", "Plusvalía"],
+        googleMapsUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15025.1!2d-104.685!3d19.208!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x842456789abcdef0%3A0x123456789abcdef!2sBarra%20de%20Navidad%2C%20Jalisco!5e0!3m2!1ses!2smx!4v1650000000000!5m2!1ses!2smx"
     },
     {
         id: 7,
@@ -208,7 +215,8 @@ export const properties: Property[] = [
         sector: "Industrial",
         condition: "Nueva",
         levels: 2,
-        features: ["Altura 12m", "Muelle de Carga", "Oficinas", "Trifásica"]
+        features: ["Altura 12m", "Muelle de Carga", "Oficinas", "Trifásica"],
+        googleMapsUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15865.1!2d-75.580!3d6.250!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e44280000000000%3A0x123456789abcdef!2sMedell%C3%ADn%2C%20Zona%20Industrial!5e0!3m2!1ses!2sco!4v1650000000000!5m2!1ses!2sco"
     }
 ]
 

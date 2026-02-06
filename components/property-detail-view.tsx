@@ -212,6 +212,25 @@ export function PropertyDetailView({ property }: Props) {
                                 <GalleryCarousel images={property.images} title={property.title} />
                             </div>
                         )}
+
+                        {/* Location Section */}
+                        {property.googleMapsUrl && (
+                            <div className="mb-16">
+                                <h2 className="text-2xl font-sans mb-6 uppercase tracking-wide">Ubicación</h2>
+                                <div className="w-full h-[400px] rounded-lg overflow-hidden border border-white/10 shadow-lg">
+                                    <iframe
+                                        src={property.googleMapsUrl}
+                                        width="100%"
+                                        height="100%"
+                                        style={{ border: 0 }}
+                                        allowFullScreen
+                                        loading="lazy"
+                                        referrerPolicy="no-referrer-when-downgrade"
+                                        className="grayscale hover:grayscale-0 transition-all duration-500"
+                                    />
+                                </div>
+                            </div>
+                        )}
                     </div>
 
                     {/* Sidebar Details */}
@@ -252,9 +271,14 @@ export function PropertyDetailView({ property }: Props) {
                                 )}
                             </div>
 
-                            <button className="w-full mt-8 bg-primary text-black py-4 font-bold tracking-widest uppercase hover:bg-white transition-colors">
+                            <Link
+                                href={`https://wa.me/523330366666?text=${encodeURIComponent(`Hola, estoy interesado en la propiedad: ${property.title} (Código: ${property.code || 'N/A'})`)}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="w-full mt-8 bg-primary text-black py-4 font-bold tracking-widest uppercase hover:bg-white transition-colors block text-center"
+                            >
                                 Contactar Agente
-                            </button>
+                            </Link>
                         </div>
                     </div>
 
