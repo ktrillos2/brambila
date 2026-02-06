@@ -1,0 +1,269 @@
+import { createClient } from "next-sanity";
+import * as dotenv from "dotenv";
+
+dotenv.config({ path: ".env.local" });
+
+const client = createClient({
+    projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
+    dataset: process.env.NEXT_PUBLIC_SANITY_DATASET,
+    apiVersion: "2024-02-05",
+    token: process.env.SANITY_API_TOKEN,
+    useCdn: false,
+});
+
+// Hardcoded data from lib/data.ts
+const properties = [
+    {
+        id: 1,
+        title: "RESIDENCIA BELLA VISTA",
+        location: "Llanogrande, Antioquia",
+        price: "$5.200M",
+        currency: "COP",
+        tag: "Venta",
+        status: "Venta",
+        type: "Casa",
+        image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=2053&auto=format&fit=crop",
+        images: [
+            "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=2053&auto=format&fit=crop",
+            "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070&auto=format&fit=crop",
+            "https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?q=80&w=2070&auto=format&fit=crop"
+        ],
+        description: "Hermosa casa con amplios espacios, acabados de lujo y excelente ubicación. Cuenta con jardín privado, cochera para 2 autos y terraza con vista panorámica.",
+        bedrooms: 5,
+        bathrooms: 6,
+        area: "650 M²",
+        landArea: "800 M²",
+        featured: true,
+        code: "RES-BV-001",
+        sector: "Residencial",
+        condition: "Excelente",
+        levels: 2,
+        features: ["Jardín", "Terraza", "Vista Panorámica", "Seguridad 24/7"],
+        googleMapsUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.521260322283!2d-75.56359!3d6.2088!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e4428dfb80fad05%3A0x42137cfcc7b53b56!2sMedell%C3%ADn%2C%20Antioquia!5e0!3m2!1ses!2sco!4v1650000000000!5m2!1ses!2sco"
+    },
+    {
+        id: 2,
+        title: "SKYLINE PENTHOUSE",
+        location: "El Poblado, Medellín",
+        price: "$12M",
+        currency: "COP",
+        tag: "Alquiler",
+        status: "Alquiler",
+        type: "Departamento",
+        image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070&auto=format&fit=crop",
+        images: [
+            "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070&auto=format&fit=crop",
+            "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=2053&auto=format&fit=crop"
+        ],
+        description: "Penthouse moderno con vistas espectaculares de la ciudad. Acabados premium, terraza privada y acceso directo al ascensor.",
+        bedrooms: 3,
+        bathrooms: 3,
+        area: "320 M²",
+        landArea: "320 M²",
+        code: "PENT-SK-002",
+        sector: "Residencial",
+        condition: "Nuevo",
+        levels: 1,
+        features: ["Jacuzzi", "Gimnasio", "Piscina", "Domótica"],
+        googleMapsUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15865.321683437146!2d-75.5756!3d6.2163!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e44282a57861937%3A0x6734c5628b0313!2sEl%20Poblado%2C%20Medell%C3%ADn%2C%20Antioquia!5e0!3m2!1ses!2sco!4v1650000000000!5m2!1ses!2sco"
+    },
+    {
+        id: 3,
+        title: "LOFT INDUSTRIAL",
+        location: "Provenza, Medellín",
+        price: "$1.800M",
+        currency: "COP",
+        tag: "Venta",
+        status: "Venta",
+        type: "Departamento",
+        image: "https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?q=80&w=2070&auto=format&fit=crop",
+        images: [
+            "https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?q=80&w=2070&auto=format&fit=crop",
+            "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?q=80&w=2070&auto=format&fit=crop"
+        ],
+        description: "Loft de diseño industrial en el corazón de Provenza. Doble altura, espacios abiertos y excelente iluminación natural.",
+        bedrooms: 1,
+        bathrooms: 2,
+        area: "140 M²",
+        landArea: "140 M²",
+        code: "LOFT-IND-003",
+        sector: "Residencial",
+        condition: "Remodelado",
+        levels: 2,
+        features: ["Doble Altura", "Diseño Industrial", "Ubicación Premium"],
+        googleMapsUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.3!2d-75.568!3d6.212!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e442828b8123456%3A0x123456789abcdef!2sProvenza%2C%20Medell%C3%ADn!5e0!3m2!1ses!2sco!4v1650000000000!5m2!1ses!2sco"
+    },
+    {
+        id: 4,
+        title: "CASA CAMPESTRE",
+        location: "Rionegro, Antioquia",
+        price: "$3.500M",
+        currency: "COP",
+        tag: "Venta",
+        status: "Venta",
+        type: "Casa",
+        image: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?q=80&w=2070&auto=format&fit=crop",
+        images: [
+            "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?q=80&w=2070&auto=format&fit=crop",
+            "https://images.unsplash.com/photo-1605276374104-dee2a0ed3cd6?q=80&w=2070&auto=format&fit=crop"
+        ],
+        description: "Casa campestre rodeada de naturaleza. Ideal para desconectarse de la ciudad sin perder comodidades.",
+        bedrooms: 4,
+        bathrooms: 4,
+        area: "450 M²",
+        landArea: "2,500 M²",
+        code: "CAMP-RIO-004",
+        sector: "Campestre",
+        condition: "Buena",
+        levels: 1,
+        features: ["Espacios Verdes", "Privacidad", "Árboles Frutales"],
+        googleMapsUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15867.1!2d-75.372!3d6.155!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e469fd8c8123456%3A0x123456789abcdef!2sRionegro%2C%20Antioquia!5e0!3m2!1ses!2sco!4v1650000000000!5m2!1ses!2sco"
+    },
+    {
+        id: 5,
+        title: "Terreno en El Mentidero",
+        location: "El Mentidero, Autlán de Navarro, Jalisco",
+        price: "$27,585,000 MXN",
+        currency: "MXN",
+        tag: "Venta",
+        status: "Venta",
+        type: "Terreno",
+        image: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=2232&auto=format&fit=crop",
+        images: [
+            "https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=2232&auto=format&fit=crop",
+            "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1974&auto=format&fit=crop"
+        ],
+        description: "PREDIO RUSTICO 'EL PABELLÓN' EN EL MENTIDERO, JALISCO.\nUbicado por la carretera el Mentidero, al este de la población de Autlán, Jal.\nCuenta con todos los servicios y está listo para escriturar.",
+        landArea: "230,000 m²",
+        code: "NN-GQC314",
+        sector: "Comercial",
+        condition: "Buena",
+        levels: 0,
+        features: ["Servicios Básicos", "Escrituración Inmediata", "Acceso Carretera"],
+        googleMapsUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14995.1!2d-104.380!3d19.780!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8424d6789abcdef0%3A0x123456789abcdef!2sEl%20Mentidero%2C%20Jalisco!5e0!3m2!1ses!2smx!4v1650000000000!5m2!1ses!2smx"
+    },
+    // Skipping id 6 for now as local images might fail if path is not correct relative to script, but let's try to handle or just skip it if it's local only
+    {
+        id: 7,
+        title: "BODEGA INDUSTRIAL NORTE",
+        location: "Medellín, Antioquia",
+        price: "$8.500M",
+        currency: "COP",
+        tag: "Venta",
+        status: "Venta",
+        type: "Bodega",
+        image: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=2070&auto=format&fit=crop",
+        images: [
+            "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=2070&auto=format&fit=crop"
+        ],
+        description: "Bodega industrial de gran capacidad con oficinas integradas y patio de maniobras.",
+        area: "1200 M²",
+        landArea: "1500 M²",
+        code: "BOD-IND-007",
+        sector: "Industrial",
+        condition: "Nueva",
+        levels: 2,
+        features: ["Altura 12m", "Muelle de Carga", "Oficinas", "Trifásica"],
+        googleMapsUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15865.1!2d-75.580!3d6.250!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e44280000000000%3A0x123456789abcdef!2sMedell%C3%ADn%2C%20Zona%20Industrial!5e0!3m2!1ses!2sco!4v1650000000000!5m2!1ses!2sco"
+    }
+];
+
+async function uploadImage(url) {
+    if (!url || typeof url !== 'string' || url.startsWith('/')) return null; // Skip local images for now or invalid URLs
+    try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`Failed to fetch image: ${url}`);
+        const buffer = await response.arrayBuffer();
+        return await client.assets.upload('image', Buffer.from(buffer), {
+            filename: url.split('/').pop().split('?')[0] // Basic filename cleanup
+        });
+    } catch (error) {
+        console.error("Image upload failed:", error);
+        return null;
+    }
+}
+
+async function migrate() {
+    try {
+        console.log("Starting Property migration...");
+        const propertyIds = [];
+
+        for (const prop of properties) {
+            console.log(`Processing ${prop.title}...`);
+
+            // Upload main image
+            const mainImageAsset = await uploadImage(prop.image);
+            const mainImage = mainImageAsset ? { _type: 'image', asset: { _type: 'reference', _ref: mainImageAsset._id } } : undefined;
+
+            // Upload gallery
+            const gallery = [];
+            if (prop.images) {
+                for (const imgUrl of prop.images) {
+                    const asset = await uploadImage(imgUrl);
+                    if (asset) {
+                        gallery.push({
+                            _key: asset._id,
+                            _type: 'image',
+                            asset: { _type: 'reference', _ref: asset._id }
+                        });
+                    }
+                }
+            }
+
+            const doc = {
+                _type: 'property',
+                title: prop.title,
+                slug: { _type: 'slug', current: prop.title.toLowerCase().replace(/\s+/g, '-').slice(0, 96) },
+                location: prop.location,
+                price: prop.price,
+                currency: prop.currency,
+                tag: prop.tag,
+                status: prop.status,
+                type: prop.type,
+                mainImage: mainImage,
+                gallery: gallery,
+                description: prop.description,
+                bedrooms: prop.bedrooms,
+                bathrooms: prop.bathrooms,
+                area: prop.area,
+                landArea: prop.landArea,
+                levels: prop.levels,
+                code: prop.code,
+                sector: prop.sector,
+                condition: prop.condition,
+                features: prop.features,
+                googleMapsUrl: prop.googleMapsUrl
+            };
+
+            // Check if exists based on some unique field? 
+            // For simplicity, we are creating new ones here. In a real migration we might check for existing slug.
+            // But let's just createOrReplace based on code if avail, or just create.
+
+            // To be safe and idempotent, we'll use a deterministic ID if code exists, else slug-based ID
+            const docId = prop.code ? `property-${prop.code}` : `property-${doc.slug.current}`;
+            const newDoc = { ...doc, _id: docId };
+
+            const result = await client.createOrReplace(newDoc);
+            console.log(`Migrated property: ${result.title} (${result._id})`);
+            propertyIds.push({ _type: 'reference', _ref: result._id, _key: result._id });
+        }
+
+        // Now create Home Collection
+        console.log("Creating Home Collection...");
+        const homeCollection = {
+            _id: 'homeCollection',
+            _type: 'homeCollection',
+            title: 'Colección Privada',
+            subtitle: 'Curaduría Exclusiva',
+            featuredProperties: propertyIds // Link all migrated properties
+        };
+
+        const hcResult = await client.createOrReplace(homeCollection);
+        console.log("Home Collection migration successful:", hcResult);
+
+    } catch (error) {
+        console.error("Migration failed:", error);
+    }
+}
+
+migrate();

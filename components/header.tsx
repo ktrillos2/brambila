@@ -10,6 +10,7 @@ import { GLOBAL_CONFIG_QUERY } from "@/sanity/lib/queries"
 type GlobalConfig = {
   siteName: string;
   logo: string;
+  headerMenu: { label: string; href: string }[];
 }
 
 export function Header() {
@@ -37,13 +38,6 @@ export function Header() {
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
-  const navItems = [
-    { label: "INICIO", href: "/" },
-    { label: "PROPIEDADES", href: "/propiedades" },
-    { label: "NOSOTROS", href: "/nosotros" },
-    { label: "SERVICIOS", href: "/#servicios" },
-  ]
-
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? "bg-black/95 backdrop-blur-sm shadow-sm" : "bg-transparent"
       }`}>
@@ -64,7 +58,7 @@ export function Header() {
 
           {/* Desktop Navigation - Centered */}
           <nav className="hidden lg:flex items-center gap-12">
-            {navItems.map((item) => (
+            {config?.headerMenu?.map((item) => (
               <Link
                 key={item.label}
                 href={item.href}
@@ -99,7 +93,7 @@ export function Header() {
         {isMenuOpen && (
           <div className="lg:hidden bg-background/98 backdrop-blur-md border-t border-border py-6">
             <nav className="flex flex-col gap-6">
-              {navItems.map((item) => (
+              {config?.headerMenu?.map((item) => (
                 <Link
                   key={item.label}
                   href={item.href}

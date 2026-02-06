@@ -1,14 +1,32 @@
 "use client"
 
 import * as React from "react"
+import { useState, useEffect } from "react"
 import Image from "next/image"
 import useEmblaCarousel from "embla-carousel-react"
 import { ArrowLeft, ArrowRight, Bed, Bath, Maximize, Layers } from "lucide-react"
-
-import { properties as allProperties, Property } from "@/lib/data"
 import Link from "next/link"
+import { client } from "@/sanity/lib/client"
+import { HOME_COLLECTION_QUERY } from "@/sanity/lib/queries"
 
+type Property = {
+    id: string
+    title: string
+    location: string
+    price: string
+    tag: string
+    image: string
+    bedrooms?: number
+    bathrooms?: number
+    area?: string
+    levels?: number
+}
 
+type HomeCollectionData = {
+    title: string
+    subtitle: string
+    featuredProperties: Property[]
+}
 
 export function HomeCollectionSection() {
     const [emblaRef, emblaApi] = useEmblaCarousel({
@@ -17,6 +35,19 @@ export function HomeCollectionSection() {
         skipSnaps: false,
         dragFree: true
     })
+    const [data, setData] = useState<HomeCollectionData | null>(null)
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const result = await client.fetch(HOME_COLLECTION_QUERY)
+                setData(result)
+            } catch (error) {
+                console.error("Failed to fetch home collection:", error)
+            }
+        }
+        fetchData()
+    }, [])
 
     const scrollPrev = React.useCallback(() => {
         if (emblaApi) emblaApi.scrollPrev()
@@ -26,6 +57,8 @@ export function HomeCollectionSection() {
         if (emblaApi) emblaApi.scrollNext()
     }, [emblaApi])
 
+    if (!data) return null // Or loading state
+
     return (
         <section className="py-20 bg-[#0a0a0a] text-white overflow-hidden">
             <div className="container mx-auto px-6 md:px-12 lg:px-20">
@@ -33,10 +66,10 @@ export function HomeCollectionSection() {
                 <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-8">
                     <div>
                         <h3 className="text-primary text-[10px] md:text-xs font-medium tracking-[0.3em] uppercase mb-4">
-                            Curaduría Exclusiva
+                            {data.subtitle}
                         </h3>
-                        <h2 className="text-4xl md:text-5xl font-sans tracking-wide">
-                            Colección <span className="text-muted-foreground italic font-light">Privada</span>
+                        <h2 className="text-4xl md:text-5xl font-sans tracking-wide uppercase">
+                            {data.title.split(' ')[0]} <span className="text-muted-foreground italic font-light">{data.title.split(' ').slice(1).join(' ')}</span>
                         </h2>
                     </div>
 
@@ -61,22 +94,24 @@ export function HomeCollectionSection() {
                 {/* Carousel */}
                 <div className="overflow-hidden -mx-4 px-4" ref={emblaRef}>
                     <div className="flex gap-6">
-                        {allProperties.slice(0, 4).map((property) => (
+                        {data.featuredProperties?.map((property) => (
                             <div
                                 key={property.id}
                                 className="flex-[0_0_100%] md:flex-[0_0_45%] lg:flex-[0_0_35%] min-w-0"
                             >
                                 <Link
-                                    href={`/propiedad/${property.id}`}
+                                    href={`/propiedad/${property.id}`} // Should eventually use slug or check how dynamic routing handles IDs
                                     className="group relative aspect-[4/5] w-full overflow-hidden bg-card text-left transition-all duration-700 cursor-pointer block"
                                 >
                                     {/* Background Image */}
-                                    <Image
-                                        src={property.image}
-                                        alt={property.title}
-                                        fill
-                                        className="object-cover transition-transform duration-700 group-hover:scale-110"
-                                    />
+                                    {property.image && (
+                                        <Image
+                                            src={property.image}
+                                            alt={property.title}
+                                            fill
+                                            className="object-cover transition-transform duration-700 group-hover:scale-110"
+                                        />
+                                    )}
 
                                     {/* Tag (Always Visible) */}
                                     <div className="absolute top-4 left-4 z-20">

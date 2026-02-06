@@ -12,5 +12,122 @@ export const GLOBAL_CONFIG_QUERY = groq`*[_type == "globalConfig"][0]{
   socialLinks[]{
     platform,
     url
+  },
+  headerMenu[]{
+    label,
+    href
+  },
+  footerMenu[]{
+    label,
+    href
+  },
+  legalMenu[]{
+    label,
+    href
   }
+}`;
+
+export const HERO_QUERY = groq`*[_type == "hero"][0]{
+  title1,
+  title2,
+  subtitle,
+  searchPlaceholder,
+  images[]{
+    "image": image.asset->url,
+    alt
+  }
+}`;
+
+export const HOME_COLLECTION_QUERY = groq`*[_type == "homeCollection"][0]{
+  title,
+  subtitle,
+  featuredProperties[]->{
+    "id": _id, 
+    title,
+    location,
+    price,
+    tag,
+    "image": mainImage.asset->url,
+    bedrooms,
+    bathrooms,
+    area,
+    levels
+  }
+}`;
+
+export const SERVICES_QUERY = groq`*[_type == "services"][0]{
+  subtitle,
+  title,
+  description,
+  servicesList[]{
+    icon,
+    title,
+    description
+  }
+}`;
+
+export const CONTACT_QUERY = groq`{
+  "contact": *[_type == "contact"][0],
+  "global": *[_type == "globalConfig"][0]{
+    phone,
+    email,
+    address
+  }
+}`;
+
+export const ALL_PROPERTIES_QUERY = groq`*[_type == "property"]{
+  "id": _id,
+  title,
+  "slug": slug.current,
+  location,
+  price,
+  tag,
+  status,
+  type,
+  "image": mainImage.asset->url,
+  bedrooms,
+  bathrooms,
+  area,
+  landArea,
+  levels,
+  featured
+}`;
+
+export const PROPERTY_BY_SLUG_QUERY = groq`*[_type == "property" && slug.current == $slug][0]{
+  "id": _id,
+  title,
+  "slug": slug.current,
+  location,
+  price,
+  tag,
+  status,
+  type,
+  "image": mainImage.asset->url,
+  "images": gallery[].asset->url,
+  video, 
+  "videoUrl": video.asset->url,
+  description,
+  bedrooms,
+  bathrooms,
+  area,
+  landArea,
+  levels,
+  code,
+  sector,
+  condition,
+  features,
+  googleMapsUrl,
+  "measures": {
+    "total": area,
+    "north": "",
+    "south": "",
+    "east": "",
+    "west": ""
+  }
+}`;
+
+export const PROPERTY_CONFIGS_QUERY = groq`*[_type == "propertyConfigs"][0]{
+  locations,
+  propertyTypes,
+  amenities
 }`;

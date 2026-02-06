@@ -12,6 +12,11 @@ type SocialLink = {
   url: string;
 }
 
+type MenuItem = {
+  label: string;
+  href: string;
+}
+
 type GlobalConfig = {
   siteName: string;
   logo: string;
@@ -22,6 +27,8 @@ type GlobalConfig = {
   address: string;
   footerText: string;
   socialLinks: SocialLink[];
+  footerMenu: MenuItem[];
+  legalMenu: MenuItem[];
 }
 
 export function Footer() {
@@ -51,14 +58,6 @@ export function Footer() {
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" })
   }
-
-  const quickLinks = [
-    { label: "Inicio", href: "#inicio" },
-    { label: "Nosotros", href: "#nosotros" },
-    { label: "Servicios", href: "#servicios" },
-    { label: "Propiedades", href: "#propiedades" },
-    { label: "Contacto", href: "#contacto" },
-  ]
 
   const getSocialIcon = (platform: string) => {
     switch (platform.toLowerCase()) {
@@ -126,7 +125,7 @@ export function Footer() {
           <div>
             <h3 className="text-foreground font-semibold mb-6 text-sm tracking-wider uppercase">Enlaces Rápidos</h3>
             <ul className="space-y-3">
-              {quickLinks.map((link) => (
+              {config.footerMenu?.map((link) => (
                 <li key={link.label}>
                   <Link
                     href={link.href}
@@ -144,24 +143,17 @@ export function Footer() {
           <div>
             <h3 className="text-foreground font-semibold mb-6 text-sm tracking-wider uppercase">Legal</h3>
             <ul className="space-y-3">
-              <li>
-                <Link
-                  href="/aviso-de-privacidad"
-                  className="text-muted-foreground hover:text-primary transition-colors text-sm inline-flex items-center gap-2 group"
-                >
-                  <span className="w-0 h-px bg-primary group-hover:w-4 transition-all duration-300" />
-                  Aviso de Privacidad
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/terminos-y-condiciones"
-                  className="text-muted-foreground hover:text-primary transition-colors text-sm inline-flex items-center gap-2 group"
-                >
-                  <span className="w-0 h-px bg-primary group-hover:w-4 transition-all duration-300" />
-                  Términos y Condiciones
-                </Link>
-              </li>
+              {config.legalMenu?.map((link) => (
+                <li key={link.label}>
+                  <Link
+                    href={link.href}
+                    className="text-muted-foreground hover:text-primary transition-colors text-sm inline-flex items-center gap-2 group"
+                  >
+                    <span className="w-0 h-px bg-primary group-hover:w-4 transition-all duration-300" />
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 

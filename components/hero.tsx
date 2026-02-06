@@ -2,54 +2,68 @@
 
 import { useState, useEffect, useCallback } from "react"
 import { Search, ChevronLeft, ChevronRight } from "lucide-react"
+import { client } from "@/sanity/lib/client"
+import { HERO_QUERY } from "@/sanity/lib/queries"
 
-const heroSlides = [
-  {
-    image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=2053&auto=format&fit=crop",
-    alt: "Cocina moderna de lujo"
-  },
-  {
-    image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070&auto=format&fit=crop",
-    alt: "Casa moderna exterior"
-  },
-  {
-    image: "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?q=80&w=2070&auto=format&fit=crop",
-    alt: "Sala de estar elegante"
-  },
-  {
-    image: "https://images.unsplash.com/photo-1600585154526-990dced4db0d?q=80&w=2070&auto=format&fit=crop",
-    alt: "Terraza con vista"
-  }
-]
+type HeroSlide = {
+  image: string
+  alt: string
+}
+
+type HeroData = {
+  title1: string
+  title2: string
+  subtitle: string
+  searchPlaceholder: string
+  images: HeroSlide[]
+}
 
 export function Hero() {
   const [searchQuery, setSearchQuery] = useState("")
   const [currentSlide, setCurrentSlide] = useState(0)
   const [isTransitioning, setIsTransitioning] = useState(false)
-
-  const nextSlide = useCallback(() => {
-    if (isTransitioning) return
-    setIsTransitioning(true)
-    setCurrentSlide((prev) => (prev + 1) % heroSlides.length)
-    setTimeout(() => setIsTransitioning(false), 1000)
-  }, [isTransitioning])
-
-  const prevSlide = useCallback(() => {
-    if (isTransitioning) return
-    setIsTransitioning(true)
-    setCurrentSlide((prev) => (prev - 1 + heroSlides.length) % heroSlides.length)
-    setTimeout(() => setIsTransitioning(false), 1000)
-  }, [isTransitioning])
+  const [heroData, setHeroData] = useState<HeroData | null>(null)
 
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await client.fetch(HERO_QUERY)
+        setHeroData(data)
+      } catch (error) {
+        console.error("Failed to fetch hero data:", error)
+      }
+    }
+    fetchData()
+  }, [])
+
+  const slides = heroData?.images || []
+
+  const nextSlide = useCallback(() => {
+    if (isTransitioning || slides.length === 0) return
+    setIsTransitioning(true)
+    setCurrentSlide((prev) => (prev + 1) % slides.length)
+    setTimeout(() => setIsTransitioning(false), 1000)
+  }, [isTransitioning, slides.length])
+
+  const prevSlide = useCallback(() => {
+    if (isTransitioning || slides.length === 0) return
+    setIsTransitioning(true)
+    setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length)
+    setTimeout(() => setIsTransitioning(false), 1000)
+  }, [isTransitioning, slides.length])
+
+  useEffect(() => {
+    if (slides.length === 0) return
     const interval = setInterval(nextSlide, 6000)
     return () => clearInterval(interval)
-  }, [nextSlide])
+  }, [nextSlide, slides.length])
+
+  if (!heroData) return null // Or loading skeleton
 
   return (
     <section id="inicio" className="relative h-screen w-full overflow-hidden">
       {/* Background Slider with Zoom Effect */}
-      {heroSlides.map((slide, index) => (
+      {slides.map((slide, index) => (
         <div
           key={slide.image}
           className={`absolute inset-0 transition-opacity duration-1000 ${index === currentSlide ? "opacity-100" : "opacity-0"
@@ -91,7 +105,7 @@ export function Hero() {
 
       {/* Slide Indicators */}
       <div className="absolute bottom-8 right-6 md:right-12 lg:right-16 flex items-center gap-3 z-20">
-        {heroSlides.map((_, index) => (
+        {slides.map((_, index) => (
           <button
             key={`slide-indicator-${index}`}
             type="button"
@@ -114,52 +128,60 @@ export function Hero() {
       {/* Content */}
       <div className="relative z-10 h-full flex flex-col items-center justify-center px-6 md:px-12 lg:px-20">
         {/* Small Tagline */}
-        <p className="text-primary text-xs md:text-sm tracking-[0.4em] mb-8 text-center animate-fade-in-up font-medium">
-          Compra, Vende, Renta... profesionales expertos en Bienes Raíces
+        <p className="text-primary text-xs md:text-sm tracking-[0.4em] mb-8 text-center animate-fade-in-up font-medium" style={{ whiteSpace: 'pre-line' }}>
+          {heroData.subtitle.split('\n\n')[0]}
         </p>
 
         {/* Main Title */}
         <h1 className="text-center mb-4">
           <span className="block font-sans text-6xl md:text-8xl lg:text-9xl text-white font-bold tracking-wide drop-shadow-2xl animate-fade-in-up animation-delay-100">
-            Brambila&apos;s
+            {heroData.title1}
           </span>
-          <span className="block font-sans text-4xl md:text-6xl lg:text-7xl text-white font-bold tracking-wide drop-shadow-2xl animate-fade-in-up animation-delay-100">
-            INMOBILIARIA
+          <span className="block font-sans text-4xl md:text-6xl lg:text-7xl text-white font-bold tracking-wide drop-shadow-2xl animate-fade-in-up animation-delay-100 uppercase">
+            {heroData.title2}
           </span>
 
         </h1>
 
         {/* Tagline */}
         <div className="text-center mt-10 mb-16 max-w-xl animate-fade-in-up animation-delay-300">
-          <p className="text-white/90 text-base md:text-lg leading-relaxed font-light">
-            Redefiniendo el concepto inmobiliario.
-          </p>
-          <p className="text-white/90 text-base md:text-lg leading-relaxed font-light">
-            Donde la confianza encuentra la excelencia.
-          </p>
+          {heroData.subtitle.split('\n\n')[1]?.split('\n').map((line, i) => (
+            <p key={i} className="text-white/90 text-base md:text-lg leading-relaxed font-light">
+              {line}
+            </p>
+          ))}
         </div>
 
         {/* Search Bar */}
         <div className="w-full max-w-2xl animate-fade-in-up animation-delay-400">
-          <div className="flex items-center bg-black/40 backdrop-blur-md border border-white/10 hover:border-white/20 transition-colors">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault()
+              if (searchQuery.trim()) {
+                // Redirect to properties page with search param
+                window.location.href = `/propiedades?search=${encodeURIComponent(searchQuery)}`
+              }
+            }}
+            className="flex items-center bg-black/40 backdrop-blur-md border border-white/10 hover:border-white/20 transition-colors"
+          >
             <div className="flex items-center gap-4 px-6 py-5 flex-1">
               <span className="text-white/70 text-xs tracking-[0.2em] shrink-0 font-medium">BUSCAR:</span>
               <input
                 type="text"
-                placeholder="Ubicación, Zona, ID..."
+                placeholder={heroData.searchPlaceholder}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="bg-transparent border-none outline-none text-white placeholder-white/40 text-sm w-full font-light"
               />
             </div>
             <button
-              type="button"
+              type="submit"
               className="bg-white text-black px-10 py-5 text-xs tracking-[0.2em] hover:bg-primary transition-colors duration-300 flex items-center gap-2 shrink-0 font-medium"
             >
               <Search className="w-4 h-4" />
               EXPLORAR
             </button>
-          </div>
+          </form>
         </div>
       </div>
 

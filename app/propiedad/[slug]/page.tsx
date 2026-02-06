@@ -1,16 +1,16 @@
 import { Metadata } from "next"
 import Link from "next/link"
-import { getPropertyById } from "@/lib/data"
+import { client } from "@/sanity/lib/client"
+import { PROPERTY_BY_SLUG_QUERY } from "@/sanity/lib/queries"
 import { PropertyDetailView } from "@/components/property-detail-view"
 
 type Props = {
-    params: Promise<{ id: string }>
+    params: Promise<{ slug: string }>
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-    const { id: paramId } = await params
-    const id = Number(paramId)
-    const property = getPropertyById(id)
+    const { slug } = await params
+    const property = await client.fetch(PROPERTY_BY_SLUG_QUERY, { slug })
 
     if (!property) {
         return {
@@ -20,26 +20,25 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
     return {
         title: `${property.title} | Brambila's Inmobiliaria`,
-        description: property.description.slice(0, 160),
+        description: property.description?.slice(0, 160),
         openGraph: {
             title: property.title,
             description: property.description,
-            images: [property.image],
+            images: property.image ? [property.image] : [],
         },
     }
 }
 
 export default async function PropertyDetailPage({ params }: Props) {
-    const { id: paramId } = await params
-    const id = Number(paramId)
-    const property = getPropertyById(id)
+    const { slug } = await params
+    const property = await client.fetch(PROPERTY_BY_SLUG_QUERY, { slug })
 
     if (!property) {
         return (
             <div className="min-h-screen bg-background flex flex-col items-center justify-center">
                 <h1 className="text-2xl font-sans mb-4">Propiedad no encontrada</h1>
-                <Link href="/" className="text-primary hover:underline">
-                    Volver al Inicio
+                <Link href="/propiedades" className="text-primary hover:underline">
+                    Volver al listado
                 </Link>
             </div>
         )

@@ -2,17 +2,17 @@ import { defineField, defineType } from 'sanity'
 
 export default defineType({
     name: 'globalConfig',
-    title: 'Global Configuration',
+    title: 'Configuración Global',
     type: 'document',
     fields: [
         defineField({
             name: 'siteName',
-            title: 'Site Name',
+            title: 'Nombre del Sitio',
             type: 'string',
         }),
         defineField({
             name: 'logo',
-            title: 'LOGO Header',
+            title: 'Logo Encabezado',
             type: 'image',
             options: {
                 hotspot: true,
@@ -20,7 +20,7 @@ export default defineType({
         }),
         defineField({
             name: 'logoFooter',
-            title: 'LOGO Footer',
+            title: 'Logo Pie de Página',
             type: 'image',
             options: {
                 hotspot: true,
@@ -28,28 +28,28 @@ export default defineType({
         }),
         defineField({
             name: 'email',
-            title: 'Contact Email',
+            title: 'Correo de Contacto',
             type: 'string',
         }),
         defineField({
             name: 'phone',
-            title: 'Phone Number',
+            title: 'Teléfono',
             type: 'string',
         }),
         defineField({
             name: 'whatsapp',
-            title: 'WhatsApp Number',
+            title: 'Número de WhatsApp',
             type: 'string',
-            description: 'Format: 5211234567890 (International format without +)',
+            description: 'Formato: 5211234567890 (Formato internacional sin +)',
         }),
         defineField({
             name: 'address',
-            title: 'Address',
+            title: 'Dirección',
             type: 'text',
         }),
         defineField({
             name: 'socialLinks',
-            title: 'Social Links',
+            title: 'Redes Sociales',
             type: 'array',
             of: [
                 {
@@ -57,13 +57,79 @@ export default defineType({
                     fields: [
                         defineField({
                             name: 'platform',
-                            title: 'Platform',
+                            title: 'Plataforma',
                             type: 'string',
                         }),
                         defineField({
                             name: 'url',
                             title: 'URL',
                             type: 'url',
+                        }),
+                    ],
+                },
+            ],
+        }),
+        defineField({
+            name: 'headerMenu',
+            title: 'Menú Encabezado',
+            type: 'array',
+            of: [
+                {
+                    type: 'object',
+                    fields: [
+                        defineField({
+                            name: 'label',
+                            title: 'Etiqueta',
+                            type: 'string',
+                        }),
+                        defineField({
+                            name: 'href',
+                            title: 'Enlace',
+                            type: 'string',
+                        }),
+                    ],
+                },
+            ],
+        }),
+        defineField({
+            name: 'footerMenu',
+            title: 'Menú Pie de Página',
+            type: 'array',
+            of: [
+                {
+                    type: 'object',
+                    fields: [
+                        defineField({
+                            name: 'label',
+                            title: 'Etiqueta',
+                            type: 'string',
+                        }),
+                        defineField({
+                            name: 'href',
+                            title: 'Enlace',
+                            type: 'string',
+                        }),
+                    ],
+                },
+            ],
+        }),
+        defineField({
+            name: 'legalMenu',
+            title: 'Menú Legal',
+            type: 'array',
+            of: [
+                {
+                    type: 'object',
+                    fields: [
+                        defineField({
+                            name: 'label',
+                            title: 'Etiqueta',
+                            type: 'string',
+                        }),
+                        defineField({
+                            name: 'href',
+                            title: 'Enlace',
+                            type: 'string',
                         }),
                     ],
                 },

@@ -7,7 +7,41 @@ import { ArrowLeft, MapPin, Bed, Bath, Maximize, LandPlot, Ruler, Compass, Chevr
 import useEmblaCarousel from "embla-carousel-react"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
-import { Property } from "@/lib/data"
+
+type Property = {
+    id: string
+    title: string
+    slug: string
+    location: string
+    price: string
+    tag: string
+    status: string
+    type: string
+    image: string
+    images?: string[]
+    video?: any
+    videoUrl?: string
+    description?: string
+    bedrooms?: number
+    bathrooms?: number
+    area?: string
+    landArea?: string
+    levels?: number
+    code?: string
+    sector?: string
+    condition?: string
+    features?: string[]
+    googleMapsUrl?: string
+    measures?: {
+        total?: string
+        north?: string
+        south?: string
+        east?: string
+        west?: string
+    }
+    featured?: boolean
+    priceLabel?: string
+}
 
 type Props = {
     property: Property
@@ -181,18 +215,19 @@ export function PropertyDetailView({ property }: Props) {
                         )}
 
                         {/* Video Section */}
-                        {property.video && (
+                        {property.videoUrl && (
                             <div className="mb-16">
                                 <h2 className="text-2xl font-sans mb-6 uppercase tracking-wide">Video Recorrido</h2>
                                 <div
-                                    className="relative aspect-video w-full cursor-pointer group overflow-hidden rounded-lg"
+                                    className="relative aspect-video w-full cursor-pointer group overflow-hidden rounded-lg bg-black"
                                     onClick={() => setShowVideo(true)}
                                 >
-                                    <Image
-                                        src={property.image}
-                                        alt={`Video de ${property.title}`}
-                                        fill
-                                        className="object-cover group-hover:scale-105 transition-transform duration-700"
+                                    <video
+                                        src={`${property.videoUrl}#t=0.1`}
+                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                                        preload="metadata"
+                                        muted
+                                        playsInline
                                     />
                                     <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors flex items-center justify-center">
                                         <div className="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
@@ -287,7 +322,7 @@ export function PropertyDetailView({ property }: Props) {
             <Footer />
 
             {/* Video Modal */}
-            {showVideo && property.video && (
+            {showVideo && property.videoUrl && (
                 <div
                     className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 md:p-8 animate-in fade-in duration-300"
                     onClick={() => setShowVideo(false)}
@@ -306,12 +341,12 @@ export function PropertyDetailView({ property }: Props) {
                         className="relative w-full max-w-5xl aspect-video bg-black rounded-lg overflow-hidden shadow-2xl border border-white/10"
                         onClick={(e) => e.stopPropagation()}
                     >
-                        <iframe
-                            src={`${property.video}?autoplay=1`}
-                            title={property.title}
+                        <video
+                            src={property.videoUrl}
                             className="w-full h-full"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowFullScreen
+                            controls
+                            autoPlay
+                            playsInline
                         />
                     </div>
                 </div>

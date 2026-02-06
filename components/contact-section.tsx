@@ -6,6 +6,23 @@ import { Send, Phone, Mail, MapPin, ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+import { client } from "@/sanity/lib/client"
+import { CONTACT_QUERY } from "@/sanity/lib/queries"
+
+type ContactData = {
+  contact: {
+    subtitle: string
+    title: string
+    description: string
+    scheduleTitle: string
+    schedule: { days: string; hours: string }[]
+  }
+  global: {
+    phone: string
+    email: string
+    address: string
+  }
+}
 
 export function ContactSection() {
   const [isVisible, setIsVisible] = useState(false)
@@ -17,6 +34,19 @@ export function ContactSection() {
     phone: "",
     message: ""
   })
+  const [data, setData] = useState<ContactData | null>(null)
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const result = await client.fetch(CONTACT_QUERY)
+        setData(result)
+      } catch (error) {
+        console.error("Failed to fetch contact data:", error)
+      }
+    }
+    fetchData()
+  }, [])
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -33,7 +63,7 @@ export function ContactSection() {
     }
 
     return () => observer.disconnect()
-  }, [])
+  }, [data]) // Wait for data to be ready
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -41,23 +71,25 @@ export function ContactSection() {
     setFormData({ name: "", email: "", phone: "", message: "" })
   }
 
+  if (!data) return null // Or loading skeleton
+
   const contactInfo = [
     {
       icon: Phone,
       title: "Teléfono",
-      value: "(321) 387 56 53",
-      href: "tel:+523213875653"
+      value: data.global.phone,
+      href: `tel:${data.global.phone.replace(/\D/g, "")}`
     },
     {
       icon: Mail,
       title: "Email",
-      value: "brambilasinmobiliaria@gmail.com",
-      href: "mailto:brambilasinmobiliaria@gmail.com"
+      value: data.global.email,
+      href: `mailto:${data.global.email}`
     },
     {
       icon: MapPin,
       title: "Ubicación",
-      value: "Jalisco, México",
+      value: data.global.address,
       href: null
     }
   ]
@@ -85,14 +117,14 @@ export function ContactSection() {
           <div className={`text-center max-w-3xl mx-auto mb-16 transition-all duration-1000 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
             }`}>
             <span className="text-primary text-xs font-medium tracking-[0.3em] uppercase">
-              Hablemos
+              {data.contact.subtitle}
             </span>
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-sans text-foreground mt-4 mb-6 tracking-wide">
-              ¿Estamos listos para empezar?
+              {data.contact.title}
             </h2>
             <div className="w-16 h-1 bg-primary mx-auto mb-6" />
             <p className="text-muted-foreground text-lg">
-              Completa el formulario y de inmediato un experto de nuestro equipo se pondrá en contacto contigo.
+              {data.contact.description}
             </p>
           </div>
 
@@ -134,20 +166,14 @@ export function ContactSection() {
                 }`}
                 style={{ transitionDelay: "600ms" }}
               >
-                <h3 className="text-foreground font-semibold mb-3">Horario de Atención</h3>
+                <h3 className="text-foreground font-semibold mb-3">{data.contact.scheduleTitle}</h3>
                 <div className="space-y-2 text-muted-foreground text-sm">
-                  <p className="flex justify-between">
-                    <span>Lunes - Viernes</span>
-                    <span>9:00 AM - 7:00 PM</span>
-                  </p>
-                  <p className="flex justify-between">
-                    <span>Sábado</span>
-                    <span>10:00 AM - 2:00 PM</span>
-                  </p>
-                  <p className="flex justify-between">
-                    <span>Domingo</span>
-                    <span>Cerrado</span>
-                  </p>
+                  {data.contact.schedule?.map((scheduleItem, i) => (
+                    <p key={i} className="flex justify-between">
+                      <span>{scheduleItem.days}</span>
+                      <span>{scheduleItem.hours}</span>
+                    </p>
+                  ))}
                 </div>
               </div>
             </div>

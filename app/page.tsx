@@ -1,6 +1,8 @@
+import { Suspense } from "react"
 import { Header } from "@/components/header"
 import { Hero } from "@/components/hero"
 import { HomeCollectionSection } from "@/components/home-collection-section"
+import { PropertiesSection } from "@/components/properties-section"
 import { ServicesSection } from "@/components/services-section"
 
 import { ContactSection } from "@/components/contact-section"
@@ -12,6 +14,7 @@ export default function Home() {
       <Header />
       <Hero />
       <HomeCollectionSection />
+      
       <ServicesSection />
       <ContactSection />
       <Footer />
