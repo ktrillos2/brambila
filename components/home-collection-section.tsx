@@ -11,6 +11,7 @@ import { HOME_COLLECTION_QUERY } from "@/sanity/lib/queries"
 
 type Property = {
     id: string
+    slug: string
     title: string
     location: string
     price: string
@@ -100,7 +101,7 @@ export function HomeCollectionSection() {
                                 className="flex-[0_0_100%] md:flex-[0_0_45%] lg:flex-[0_0_35%] min-w-0"
                             >
                                 <Link
-                                    href={`/propiedad/${property.id}`} // Should eventually use slug or check how dynamic routing handles IDs
+                                    href={`/propiedad/${property.slug}`}
                                     className="group relative aspect-[4/5] w-full overflow-hidden bg-card text-left transition-all duration-700 cursor-pointer block"
                                 >
                                     {/* Background Image */}

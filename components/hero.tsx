@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
+import Image from "next/image"
 import { Search, ChevronLeft, ChevronRight } from "lucide-react"
 import { client } from "@/sanity/lib/client"
 import { HERO_QUERY } from "@/sanity/lib/queries"
@@ -69,13 +70,17 @@ export function Hero() {
           className={`absolute inset-0 transition-opacity duration-1000 ${index === currentSlide ? "opacity-100" : "opacity-0"
             }`}
         >
-          <div
-            className={`absolute inset-0 bg-cover bg-center bg-no-repeat ${index === currentSlide ? "animate-slow-zoom" : ""
-              }`}
-            style={{
-              backgroundImage: `url('${slide.image}')`
-            }}
-          />
+          <div className="absolute inset-0 w-full h-full relative">
+            <Image
+              src={slide.image}
+              alt={slide.alt || "Hero Image"}
+              fill
+              priority={index === 0}
+              quality={90}
+              className={`object-cover object-center ${index === currentSlide ? "animate-slow-zoom" : ""}`}
+              sizes="100vw"
+            />
+          </div>
         </div>
       ))}
 

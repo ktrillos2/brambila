@@ -43,6 +43,7 @@ export const HOME_COLLECTION_QUERY = groq`*[_type == "homeCollection"][0]{
   subtitle,
   featuredProperties[]->{
     "id": _id, 
+    "slug": slug.current,
     title,
     location,
     price,
@@ -98,7 +99,9 @@ export const PROPERTY_BY_SLUG_QUERY = groq`*[_type == "property" && slug.current
   title,
   "slug": slug.current,
   location,
+  locationPDF,
   price,
+
   tag,
   status,
   type,
@@ -116,7 +119,8 @@ export const PROPERTY_BY_SLUG_QUERY = groq`*[_type == "property" && slug.current
   sector,
   condition,
   features,
-  googleMapsUrl,
+
+  mapEmbed,
   "measures": {
     "total": area,
     "north": "",

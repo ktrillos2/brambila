@@ -2,10 +2,13 @@
 
 import React from "react"
 import { useState, useEffect, useRef } from "react"
-import { Send, Phone, Mail, MapPin, ArrowRight } from "lucide-react"
+import { Send, Phone, Mail, MapPin, ArrowRight, CheckCircle2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
+
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+import { toast } from "sonner"
+
 import { client } from "@/sanity/lib/client"
 import { CONTACT_QUERY } from "@/sanity/lib/queries"
 
@@ -34,6 +37,10 @@ export function ContactSection() {
     phone: "",
     message: ""
   })
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isSuccess, setIsSuccess] = useState(false)
+
+
   const [data, setData] = useState<ContactData | null>(null)
 
   useEffect(() => {
@@ -65,11 +72,44 @@ export function ContactSection() {
     return () => observer.disconnect()
   }, [data]) // Wait for data to be ready
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    alert("¡Gracias por contactarnos! Nos pondremos en contacto contigo pronto.")
-    setFormData({ name: "", email: "", phone: "", message: "" })
+    setIsSubmitting(true)
+
+    try {
+      const response = await fetch("/api/send", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      })
+
+      if (!response.ok) {
+        throw new Error("Error al enviar el mensaje")
+      }
+
+      toast.success("¡Mensaje enviado con éxito!", {
+        description: "Nos pondremos en contacto contigo pronto.",
+      })
+
+      toast.success("¡Mensaje enviado con éxito!", {
+        description: "Nos pondremos en contacto contigo pronto.",
+      })
+
+      setIsSuccess(true)
+      setFormData({ name: "", email: "", phone: "", message: "" })
+
+    } catch (error) {
+      console.error(error)
+      toast.error("Error al enviar el mensaje", {
+        description: "Por favor intenta nuevamente más tarde.",
+      })
+    } finally {
+      setIsSubmitting(false)
+    }
   }
+
 
   if (!data) return null // Or loading skeleton
 
@@ -179,106 +219,138 @@ export function ContactSection() {
             </div>
 
             {/* Contact Form */}
+            {/* Contact Form */}
             <div className={`lg:col-span-3 transition-all duration-1000 delay-300 ${isVisible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-12"
               }`}>
-              <form onSubmit={handleSubmit} className="bg-card p-8 border border-border">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                  <div className="relative">
+              {isSuccess ? (
+                <div className="bg-card p-12 border border-border h-full flex flex-col items-center justify-center text-center animate-in fade-in zoom-in duration-500">
+                  <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mb-6">
+                    <CheckCircle2 className="w-10 h-10 text-primary" />
+                  </div>
+                  <h3 className="text-2xl font-sans uppercase tracking-wide mb-4">¡Mensaje Enviado!</h3>
+                  <p className="text-muted-foreground mb-8 max-w-sm mx-auto">
+                    Gracias por contactarnos. Hemos recibido tu mensaje y nuestro equipo se pondrá en contacto contigo a la brevedad posible.
+                  </p>
+                  <Button
+                    onClick={() => setIsSuccess(false)}
+                    variant="outline"
+                    className="border-primary text-primary hover:bg-primary hover:text-primary-foreground uppercase tracking-widest text-xs font-bold"
+                  >
+                    Enviar otro mensaje
+                  </Button>
+                </div>
+              ) : (
+                <form onSubmit={handleSubmit} className="bg-card p-8 border border-border">
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div className="relative">
+                      <label
+                        htmlFor="name"
+                        className={`absolute left-4 transition-all duration-300 pointer-events-none ${focusedField === "name" || formData.name
+                          ? "-top-2.5 text-xs bg-card px-2 text-primary"
+                          : "top-4 text-muted-foreground text-sm"
+                          }`}
+                      >
+                        Nombre completo *
+                      </label>
+                      <Input
+                        id="name"
+                        type="text"
+                        required
+                        disabled={isSubmitting}
+                        value={formData.name}
+                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                        onFocus={() => setFocusedField("name")}
+                        onBlur={() => setFocusedField(null)}
+                        className="bg-transparent border-border focus:border-primary h-14 pt-4"
+                      />
+
+                    </div>
+                    <div className="relative">
+                      <label
+                        htmlFor="email"
+                        className={`absolute left-4 transition-all duration-300 pointer-events-none ${focusedField === "email" || formData.email
+                          ? "-top-2.5 text-xs bg-card px-2 text-primary"
+                          : "top-4 text-muted-foreground text-sm"
+                          }`}
+                      >
+                        Correo electrónico *
+                      </label>
+                      <Input
+                        id="email"
+                        type="email"
+                        required
+                        disabled={isSubmitting}
+                        value={formData.email}
+                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                        onFocus={() => setFocusedField("email")}
+                        onBlur={() => setFocusedField(null)}
+                        className="bg-transparent border-border focus:border-primary h-14 pt-4"
+                      />
+
+                    </div>
+                  </div>
+
+                  <div className="mb-6 relative">
                     <label
-                      htmlFor="name"
-                      className={`absolute left-4 transition-all duration-300 pointer-events-none ${focusedField === "name" || formData.name
+                      htmlFor="phone"
+                      className={`absolute left-4 transition-all duration-300 pointer-events-none ${focusedField === "phone" || formData.phone
                         ? "-top-2.5 text-xs bg-card px-2 text-primary"
                         : "top-4 text-muted-foreground text-sm"
                         }`}
                     >
-                      Nombre completo *
+                      Teléfono
                     </label>
                     <Input
-                      id="name"
-                      type="text"
-                      required
-                      value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      onFocus={() => setFocusedField("name")}
+                      id="phone"
+                      type="tel"
+                      disabled={isSubmitting}
+                      value={formData.phone}
+                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                      onFocus={() => setFocusedField("phone")}
                       onBlur={() => setFocusedField(null)}
                       className="bg-transparent border-border focus:border-primary h-14 pt-4"
                     />
+
                   </div>
-                  <div className="relative">
+
+                  <div className="mb-6 relative">
                     <label
-                      htmlFor="email"
-                      className={`absolute left-4 transition-all duration-300 pointer-events-none ${focusedField === "email" || formData.email
+                      htmlFor="message"
+                      className={`absolute left-4 transition-all duration-300 pointer-events-none ${focusedField === "message" || formData.message
                         ? "-top-2.5 text-xs bg-card px-2 text-primary"
                         : "top-4 text-muted-foreground text-sm"
                         }`}
                     >
-                      Correo electrónico *
+                      Mensaje *
                     </label>
-                    <Input
-                      id="email"
-                      type="email"
+                    <Textarea
+                      id="message"
                       required
-                      value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      onFocus={() => setFocusedField("email")}
+                      disabled={isSubmitting}
+                      rows={5}
+                      value={formData.message}
+                      onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                      onFocus={() => setFocusedField("message")}
                       onBlur={() => setFocusedField(null)}
-                      className="bg-transparent border-border focus:border-primary h-14 pt-4"
+                      className="bg-transparent border-border focus:border-primary resize-none pt-6"
                     />
+
                   </div>
-                </div>
 
-                <div className="mb-6 relative">
-                  <label
-                    htmlFor="phone"
-                    className={`absolute left-4 transition-all duration-300 pointer-events-none ${focusedField === "phone" || formData.phone
-                      ? "-top-2.5 text-xs bg-card px-2 text-primary"
-                      : "top-4 text-muted-foreground text-sm"
-                      }`}
+                  <Button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="w-full h-14 bg-primary text-primary-foreground hover:bg-primary/90 font-medium text-sm tracking-wider uppercase group transition-all duration-300 hover:shadow-lg hover:shadow-primary/20 disabled:opacity-70 disabled:cursor-not-allowed"
                   >
-                    Teléfono
-                  </label>
-                  <Input
-                    id="phone"
-                    type="tel"
-                    value={formData.phone}
-                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    onFocus={() => setFocusedField("phone")}
-                    onBlur={() => setFocusedField(null)}
-                    className="bg-transparent border-border focus:border-primary h-14 pt-4"
-                  />
-                </div>
+                    <Send className={`h-5 w-5 mr-2 ${isSubmitting ? 'animate-pulse' : 'group-hover:translate-x-1'} transition-transform`} />
+                    {isSubmitting ? "Enviando..." : "Enviar Mensaje"}
+                  </Button>
 
-                <div className="mb-6 relative">
-                  <label
-                    htmlFor="message"
-                    className={`absolute left-4 transition-all duration-300 pointer-events-none ${focusedField === "message" || formData.message
-                      ? "-top-2.5 text-xs bg-card px-2 text-primary"
-                      : "top-4 text-muted-foreground text-sm"
-                      }`}
-                  >
-                    Mensaje *
-                  </label>
-                  <Textarea
-                    id="message"
-                    required
-                    rows={5}
-                    value={formData.message}
-                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                    onFocus={() => setFocusedField("message")}
-                    onBlur={() => setFocusedField(null)}
-                    className="bg-transparent border-border focus:border-primary resize-none pt-6"
-                  />
-                </div>
-
-                <Button
-                  type="submit"
-                  className="w-full h-14 bg-primary text-primary-foreground hover:bg-primary/90 font-medium text-sm tracking-wider uppercase group transition-all duration-300 hover:shadow-lg hover:shadow-primary/20"
-                >
-                  <Send className="h-5 w-5 mr-2 group-hover:translate-x-1 transition-transform" />
-                  Enviar Mensaje
-                </Button>
-              </form>
+                </form>
+              )}
             </div>
+
           </div>
         </div>
       </div>

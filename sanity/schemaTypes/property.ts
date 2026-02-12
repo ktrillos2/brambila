@@ -25,6 +25,13 @@ export default defineType({
             type: 'string',
         }),
         defineField({
+            name: 'locationPDF',
+            title: 'Ubicación para Ficha (PDF)',
+            description: 'Si se llena, esta ubicación aparecerá en el PDF en lugar de la ubicación general.',
+            type: 'string',
+        }),
+
+        defineField({
             name: 'price',
             title: 'Precio',
             type: 'string',
@@ -126,11 +133,14 @@ export default defineType({
             type: 'array',
             of: [{ type: 'string' }],
         }),
+
         defineField({
-            name: 'googleMapsUrl',
-            title: 'URL Google Maps',
-            type: 'url',
+            name: 'mapEmbed',
+            title: 'Mapa Insertado (Embed Iframe)',
+            description: 'Pega aquí el código HTML del iframe de Google Maps',
+            type: 'text',
         }),
+
         defineField({
             name: 'video',
             title: 'Video de la Propiedad',

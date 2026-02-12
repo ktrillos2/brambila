@@ -3,8 +3,13 @@
 import { useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
-import { ArrowLeft, MapPin, Bed, Bath, Maximize, LandPlot, Ruler, Compass, ChevronRight, X, Play, Layers, Share2 } from "lucide-react"
+import { ArrowLeft, MapPin, Bed, Bath, Maximize, LandPlot, Ruler, Compass, ChevronRight, X, Play, Layers, Share2, FileDown } from "lucide-react"
 import useEmblaCarousel from "embla-carousel-react"
+import { PDFDownloadLink } from "@react-pdf/renderer"
+import QRCode from "qrcode"
+import { PropertyPDF } from "@/components/property-pdf"
+import { useEffect } from "react"
+
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 
@@ -13,7 +18,9 @@ type Property = {
     title: string
     slug: string
     location: string
+    locationPDF?: string
     price: string
+
     tag: string
     status: string
     type: string
@@ -31,7 +38,8 @@ type Property = {
     sector?: string
     condition?: string
     features?: string[]
-    googleMapsUrl?: string
+
+    mapEmbed?: string
     measures?: {
         total?: string
         north?: string
@@ -45,10 +53,27 @@ type Property = {
 
 type Props = {
     property: Property
+    globalConfig?: any
 }
 
-export function PropertyDetailView({ property }: Props) {
+export function PropertyDetailView({ property, globalConfig }: Props) {
+
     const [showVideo, setShowVideo] = useState(false)
+    const [qrCodeUrl, setQrCodeUrl] = useState("")
+    const [isClient, setIsClient] = useState(false)
+
+    useEffect(() => {
+        setIsClient(true)
+        // Generate QR Code
+        QRCode.toDataURL(window.location.href)
+            .then(url => {
+                setQrCodeUrl(url)
+            })
+            .catch(err => {
+                console.error("Error generating QR code", err)
+            })
+    }, [])
+
 
     const handleShare = async () => {
         const shareData = {
@@ -76,11 +101,14 @@ export function PropertyDetailView({ property }: Props) {
             {/* Hero Section */}
             <div className="relative h-[60vh] lg:h-[80vh] w-full mt-24">
                 <Image
-                    src={property.image}
+                    src={`${property.image}?auto=format&fit=crop&w=1920&q=80`}
                     alt={property.title}
                     fill
+                    sizes="100vw"
                     className="object-cover"
+
                     priority
+
                 />
                 <div className="absolute inset-0 bg-black/40" />
                 <div className="absolute bottom-0 left-0 right-0 p-8 lg:p-16 bg-gradient-to-t from-black/80 to-transparent">
@@ -121,6 +149,22 @@ export function PropertyDetailView({ property }: Props) {
                                     <Share2 className="w-4 h-4" />
                                     Compartir
                                 </button>
+                                {isClient && (
+                                    <PDFDownloadLink
+                                        document={<PropertyPDF property={property} qrCodeUrl={qrCodeUrl} globalConfig={globalConfig} />}
+                                        fileName={`ficha-${property.slug || 'propiedad'}.pdf`}
+                                        className="flex items-center gap-2 px-6 py-2 border border-white/30 hover:bg-white hover:text-black transition-all duration-300 text-sm tracking-widest uppercase text-white rounded-full bg-black/20 backdrop-blur-sm"
+                                    >
+
+                                        {({ loading }) => (
+                                            <>
+                                                <FileDown className="w-4 h-4" />
+                                                {loading ? "Generando..." : "Descargar Ficha"}
+                                            </>
+                                        )}
+                                    </PDFDownloadLink>
+                                )}
+
                             </div>
                         </div>
                     </div>
@@ -248,24 +292,34 @@ export function PropertyDetailView({ property }: Props) {
                             </div>
                         )}
 
-                        {/* Location Section */}
-                        {property.googleMapsUrl && (
-                            <div className="mb-16">
-                                <h2 className="text-2xl font-sans mb-6 uppercase tracking-wide">Ubicación</h2>
-                                <div className="w-full h-[400px] rounded-lg overflow-hidden border border-white/10 shadow-lg">
-                                    <iframe
-                                        src={property.googleMapsUrl}
-                                        width="100%"
-                                        height="100%"
-                                        style={{ border: 0 }}
-                                        allowFullScreen
-                                        loading="lazy"
-                                        referrerPolicy="no-referrer-when-downgrade"
-                                        className="grayscale hover:grayscale-0 transition-all duration-500"
-                                    />
+                        {/* Location Map */}
+                        {(property.mapEmbed) && (
+                            <div className="mt-12 pt-8 border-t border-white/10">
+                                <h3 className="text-xl font-light text-white mb-6 tracking-wide">Ubicación</h3>
+                                <div className="w-full aspect-video rounded-lg overflow-hidden bg-zinc-900 border border-white/10 relative">
+                                    {property.mapEmbed ? (
+                                        <div
+                                            className="w-full h-full [&>iframe]:w-full [&>iframe]:h-full [&>iframe]:border-0"
+                                            dangerouslySetInnerHTML={{ __html: property.mapEmbed }}
+                                        />
+                                    ) : (
+                                        <iframe
+                                            width="100%"
+                                            height="100%"
+                                            title="mapa-ubicacion"
+                                            src={`https://maps.google.com/maps?width=100%25&height=600&hl=es&q=${encodeURIComponent(property.location || "")}&t=&z=14&ie=UTF8&iwloc=B&output=embed`}
+                                            style={{ border: 0 }}
+                                            allowFullScreen
+                                            loading="lazy"
+                                            referrerPolicy="no-referrer-when-downgrade"
+                                            className="grayscale hover:grayscale-0 transition-all duration-500"
+                                        />
+                                    )}
+
                                 </div>
                             </div>
                         )}
+
                     </div>
 
                     {/* Sidebar Details */}

@@ -108,7 +108,9 @@ const gotham = localFont({
 })
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://www.brambilasinmobiliaria.com'),
   title: "Brambila's Inmobiliaria | Bienes Raíces en Jalisco",
+
   description: 'Tu aliado confiable en bienes raíces. Compra, venta y renta de propiedades en Jalisco, México. Asesores expertos con servicio excepcional.',
   generator: 'v0.app',
   keywords: ['inmobiliaria', 'bienes raíces', 'Jalisco', 'México', 'casas', 'terrenos', 'venta', 'renta'],

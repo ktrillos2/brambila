@@ -1,8 +1,11 @@
 import { Metadata } from "next"
 import Link from "next/link"
 import { client } from "@/sanity/lib/client"
-import { PROPERTY_BY_SLUG_QUERY } from "@/sanity/lib/queries"
+import { PROPERTY_BY_SLUG_QUERY, GLOBAL_CONFIG_QUERY } from "@/sanity/lib/queries"
 import { PropertyDetailView } from "@/components/property-detail-view"
+
+
+export const revalidate = 0 // Disable cache for property details to ensure latest data
 
 type Props = {
     params: Promise<{ slug: string }>
@@ -32,6 +35,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function PropertyDetailPage({ params }: Props) {
     const { slug } = await params
     const property = await client.fetch(PROPERTY_BY_SLUG_QUERY, { slug })
+    const globalConfig = await client.fetch(GLOBAL_CONFIG_QUERY)
+
 
     if (!property) {
         return (
@@ -44,5 +49,6 @@ export default async function PropertyDetailPage({ params }: Props) {
         )
     }
 
-    return <PropertyDetailView property={property} />
+    return <PropertyDetailView property={property} globalConfig={globalConfig} />
 }
+

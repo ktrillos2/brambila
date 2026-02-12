@@ -72,7 +72,8 @@ export function Header() {
           {/* CTA Button */}
           <div className="hidden lg:block">
             <Link
-              href="#contacto"
+              href="/#contacto"
+
               className="border border-foreground/40 px-8 py-3 text-xs tracking-[0.2em] text-foreground hover:bg-foreground hover:text-background transition-all duration-300"
             >
               CONSULTAR
@@ -104,7 +105,8 @@ export function Header() {
                 </Link>
               ))}
               <Link
-                href="#contacto"
+                href="/#contacto"
+
                 className="border border-foreground/40 px-6 py-3 text-xs tracking-[0.2em] text-foreground text-center hover:bg-foreground hover:text-background transition-all duration-300 mt-4"
                 onClick={() => setIsMenuOpen(false)}
               >
