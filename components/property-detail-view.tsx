@@ -12,6 +12,7 @@ import { useEffect } from "react"
 
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
+import { formatPrice } from "@/lib/utils"
 
 type Property = {
     id: string
@@ -20,6 +21,7 @@ type Property = {
     location: string
     locationPDF?: string
     price: string
+    currency?: string
 
     tag: string
     status: string
@@ -136,7 +138,7 @@ export function PropertyDetailView({ property, globalConfig }: Props) {
                             <div className="text-left lg:text-right flex flex-col items-start lg:items-end gap-4">
                                 <div>
                                     <p className="text-3xl lg:text-4xl font-light text-primary">
-                                        {property.price}
+                                        {formatPrice(property.price, property.currency)}
                                     </p>
                                     {property.priceLabel && (
                                         <p className="text-white/70 text-sm tracking-wider uppercase">{property.priceLabel}</p>
@@ -153,7 +155,7 @@ export function PropertyDetailView({ property, globalConfig }: Props) {
                                     <PDFDownloadLink
                                         document={<PropertyPDF property={property} qrCodeUrl={qrCodeUrl} globalConfig={globalConfig} />}
                                         fileName={`ficha-${property.slug || 'propiedad'}.pdf`}
-                                        className="flex items-center gap-2 px-6 py-2 border border-white/30 hover:bg-white hover:text-black transition-all duration-300 text-sm tracking-widest uppercase text-white rounded-full bg-black/20 backdrop-blur-sm"
+                                        className="flex items-center gap-2 px-6 py-2 border border-white/30 hover:bg-white hover:text-black transition-all duration-300 text-sm tracking-widest uppercase text-white rounded-full bg-black/20 backdrop-blur-sm whitespace-nowrap"
                                     >
 
                                         {({ loading }) => (
@@ -350,7 +352,7 @@ export function PropertyDetailView({ property, globalConfig }: Props) {
                                 </div>
                                 <div className="flex justify-between items-center py-2 border-b border-border/50">
                                     <span className="text-muted-foreground">Precio:</span>
-                                    <span className="font-medium text-primary">{property.price}</span>
+                                    <span className="font-medium text-primary">{formatPrice(property.price, property.currency)}</span>
                                 </div>
                                 {property.condition && (
                                     <div className="flex justify-between items-center py-2 border-b border-border/50">

@@ -42,11 +42,12 @@ export const HOME_COLLECTION_QUERY = groq`*[_type == "homeCollection"][0]{
   title,
   subtitle,
   featuredProperties[]->{
-    "id": _id, 
+  "id": _id, 
     "slug": slug.current,
     title,
     location,
     price,
+    currency,
     tag,
     "image": mainImage.asset->url,
     bedrooms,
@@ -76,12 +77,13 @@ export const CONTACT_QUERY = groq`{
   }
 }`;
 
-export const ALL_PROPERTIES_QUERY = groq`*[_type == "property"]{
+export const ALL_PROPERTIES_QUERY = groq`*[_type == "property" && defined(slug.current)]{
   "id": _id,
   title,
   "slug": slug.current,
   location,
   price,
+  currency,
   tag,
   status,
   type,
@@ -101,7 +103,7 @@ export const PROPERTY_BY_SLUG_QUERY = groq`*[_type == "property" && slug.current
   location,
   locationPDF,
   price,
-
+  currency,
   tag,
   status,
   type,

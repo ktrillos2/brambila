@@ -8,6 +8,7 @@ import { ArrowLeft, ArrowRight, Bed, Bath, Maximize, Layers } from "lucide-react
 import Link from "next/link"
 import { client } from "@/sanity/lib/client"
 import { HOME_COLLECTION_QUERY } from "@/sanity/lib/queries"
+import { formatPrice } from "@/lib/utils"
 
 type Property = {
     id: string
@@ -15,6 +16,7 @@ type Property = {
     title: string
     location: string
     price: string
+    currency?: string
     tag: string
     image: string
     bedrooms?: number
@@ -95,7 +97,7 @@ export function HomeCollectionSection() {
                 {/* Carousel */}
                 <div className="overflow-hidden -mx-4 px-4" ref={emblaRef}>
                     <div className="flex gap-6">
-                        {data.featuredProperties?.map((property) => (
+                        {data.featuredProperties?.filter(p => p.slug).map((property) => (
                             <div
                                 key={property.id}
                                 className="flex-[0_0_100%] md:flex-[0_0_45%] lg:flex-[0_0_35%] min-w-0"
@@ -137,7 +139,7 @@ export function HomeCollectionSection() {
 
                                         {/* Price */}
                                         <p className="text-xl text-primary font-medium mb-6">
-                                            {property.price}
+                                            {formatPrice(property.price, property.currency)}
                                         </p>
 
                                         {/* Divider */}
@@ -184,7 +186,7 @@ export function HomeCollectionSection() {
                                     {/* Default State (Visible when not hovering) */}
                                     <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 to-transparent group-hover:opacity-0 transition-opacity duration-300">
                                         <h3 className="text-white font-sans text-xl mb-1 truncate uppercase tracking-wider">{property.title}</h3>
-                                        <p className="text-primary font-medium">{property.price}</p>
+                                        <p className="text-primary font-medium">{formatPrice(property.price, property.currency)}</p>
                                     </div>
                                 </Link>
                             </div>

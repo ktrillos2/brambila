@@ -9,6 +9,7 @@ import { useEffect, useRef, useState } from "react"
 import { client } from "@/sanity/lib/client"
 import { ALL_PROPERTIES_QUERY, PROPERTY_CONFIGS_QUERY } from "@/sanity/lib/queries"
 import { useSearchParams, useRouter } from "next/navigation"
+import { formatPrice } from "@/lib/utils"
 
 type Property = {
   id: string
@@ -16,6 +17,7 @@ type Property = {
   slug: string
   location: string
   price: string
+  currency?: string
   tag: string
   status: string
   type: string
@@ -492,7 +494,7 @@ export function PropertiesSection() {
 
                       {/* Price */}
                       <p className="text-xl text-primary font-medium mb-6">
-                        {property.price}
+                        {formatPrice(property.price, property.currency)}
                       </p>
 
                       {/* Divider */}
@@ -537,7 +539,7 @@ export function PropertiesSection() {
                     {/* Default State (Visible when not hovering) */}
                     <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 to-transparent group-hover:opacity-0 transition-opacity duration-300">
                       <h3 className="text-white font-sans text-xl mb-1 truncate">{property.title}</h3>
-                      <p className="text-primary font-medium">{property.price}</p>
+                      <p className="text-primary font-medium">{formatPrice(property.price, property.currency)}</p>
                     </div>
                   </Link>
                 ))}
