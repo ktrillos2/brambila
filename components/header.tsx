@@ -11,7 +11,9 @@ type GlobalConfig = {
   siteName: string;
   logo: string;
   headerMenu: { label: string; href: string }[];
+  phone?: string;
 }
+
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -44,7 +46,7 @@ export function Header() {
       <div className="container mx-auto px-6 md:px-12 lg:px-20">
         <div className="flex items-center justify-between h-24">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-3">
+          <Link href="/" className="flex items-center gap-3 relative z-50">
             <div className="relative w-32 h-12 md:w-40 md:h-14">
               <Image
                 src={config?.logo || "/logo-brambilas.png"}
@@ -73,49 +75,62 @@ export function Header() {
           <div className="hidden lg:block">
             <Link
               href="/#contacto"
-
               className="border border-foreground/40 px-8 py-3 text-xs tracking-[0.2em] text-foreground hover:bg-foreground hover:text-background transition-all duration-300"
             >
               CONSULTAR
             </Link>
           </div>
 
-          {/* Mobile Menu Button */}
+          {/* Mobile Menu Button - Z-index fixed for overlay */}
           <button
             type="button"
-            className="lg:hidden text-foreground p-2"
+            className="lg:hidden text-foreground p-2 relative z-50 transition-colors duration-300 hover:text-primary"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
-            {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            {isMenuOpen ? <X className="h-8 w-8" /> : <Menu className="h-8 w-8" />}
           </button>
         </div>
 
-        {/* Mobile Navigation */}
+        {/* Mobile Navigation Overlay */}
         {isMenuOpen && (
-          <div className="lg:hidden bg-background/98 backdrop-blur-md border-t border-border py-6">
-            <nav className="flex flex-col gap-6">
-              {config?.headerMenu?.map((item) => (
+          <div className="fixed inset-0 z-40 bg-zinc-950/98 backdrop-blur-xl animate-in fade-in duration-300 lg:hidden flex flex-col items-center justify-center p-8">
+            <div className="flex flex-col items-center gap-8 w-full max-w-sm">
+              <nav className="flex flex-col items-center gap-8 text-center">
+                {config?.headerMenu?.map((item, i) => (
+                  <Link
+                    key={item.label}
+                    href={item.href}
+                    className="text-3xl md:text-4xl font-light text-white hover:text-primary transition-all duration-300 tracking-widest animate-in slide-in-from-bottom-4 fade-in fill-mode-backwards"
+                    style={{ animationDelay: `${i * 100}ms` }}
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+
                 <Link
-                  key={item.label}
-                  href={item.href}
-                  className="text-foreground/90 hover:text-primary transition-colors text-sm tracking-[0.2em]"
+                  href="/#contacto"
+                  className="mt-8 border border-white/30 px-12 py-4 text-sm tracking-[0.3em] text-white hover:bg-white hover:text-black transition-all duration-300 animate-in slide-in-from-bottom-4 fade-in fill-mode-backwards"
+                  style={{ animationDelay: "400ms" }}
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  {item.label}
+                  CONSULTAR
                 </Link>
-              ))}
-              <Link
-                href="/#contacto"
+              </nav>
 
-                className="border border-foreground/40 px-6 py-3 text-xs tracking-[0.2em] text-foreground text-center hover:bg-foreground hover:text-background transition-all duration-300 mt-4"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                CONSULTAR
-              </Link>
-            </nav>
+              {/* Decorative line */}
+              <div className="w-16 h-[1px] bg-white/10 mt-8 mb-4"></div>
+
+              {/* Footer info in menu */}
+              <div className="text-center space-y-2 animate-in slide-in-from-bottom-4 fade-in fill-mode-backwards" style={{ animationDelay: "500ms" }}>
+                <p className="text-white/40 text-xs tracking-wider uppercase">Contáctanos</p>
+                <p className="text-white/60 text-sm tracking-widest font-light">{config?.phone}</p>
+              </div>
+            </div>
           </div>
         )}
       </div>
     </header>
+
   )
 }
