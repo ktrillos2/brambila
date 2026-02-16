@@ -1,5 +1,6 @@
 /* eslint-disable jsx-a11y/alt-text */
 import { Document, Page, Text, View, Image, StyleSheet, Font } from "@react-pdf/renderer"
+import { formatPrice } from "@/lib/utils"
 
 // Register font
 Font.register({
@@ -198,6 +199,7 @@ type Property = {
     location: string
     locationPDF?: string
     price: string
+    currency?: string
 
     tag: string
     image: string
@@ -268,7 +270,7 @@ export const PropertyPDF = ({ property, qrCodeUrl, globalConfig }: { property: P
 
 
 
-                        <Text style={styles.price}>{property.price}</Text>
+                        <Text style={styles.price}>{formatPrice(property.price, property.currency)}</Text>
                     </View>
 
                     {/* Specs Grid */}
