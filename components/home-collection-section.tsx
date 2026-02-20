@@ -21,6 +21,7 @@ type Property = {
     image: string
     bedrooms?: number
     bathrooms?: number
+    halfBathrooms?: number
     area?: string
     levels?: number
 }
@@ -159,6 +160,13 @@ export function HomeCollectionSection() {
                                                     <Bath className="w-5 h-5 text-primary" />
                                                     <span className="text-lg">{property.bathrooms}</span>
                                                     <span className="text-[10px] text-white/70 uppercase">Baños</span>
+                                                </div>
+                                            )}
+                                            {property.halfBathrooms && (
+                                                <div className="flex flex-col items-center gap-1">
+                                                    <Bath className="w-5 h-5 text-primary" />
+                                                    <span className="text-lg">{property.halfBathrooms}</span>
+                                                    <span className="text-[10px] text-white/70 uppercase">1/2 Baños</span>
                                                 </div>
                                             )}
                                             {property.area && (

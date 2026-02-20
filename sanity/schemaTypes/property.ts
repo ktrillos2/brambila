@@ -99,6 +99,12 @@ export default defineType({
             type: 'number',
         }),
         defineField({
+            name: 'halfBathrooms',
+            title: 'Medios Baños',
+            description: 'Especifica si tiene medio baño (solo tiene el sanitario)',
+            type: 'number',
+        }),
+        defineField({
             name: 'area',
             title: 'Área Construcción',
             type: 'string',

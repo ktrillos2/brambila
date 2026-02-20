@@ -52,6 +52,7 @@ export const HOME_COLLECTION_QUERY = groq`*[_type == "homeCollection"][0]{
     "image": mainImage.asset->url,
     bedrooms,
     bathrooms,
+    halfBathrooms,
     area,
     levels
   }
@@ -90,6 +91,7 @@ export const ALL_PROPERTIES_QUERY = groq`*[_type == "property" && defined(slug.c
   "image": mainImage.asset->url,
   bedrooms,
   bathrooms,
+  halfBathrooms,
   area,
   landArea,
   levels,
@@ -114,6 +116,7 @@ export const PROPERTY_BY_SLUG_QUERY = groq`*[_type == "property" && slug.current
   description,
   bedrooms,
   bathrooms,
+  halfBathrooms,
   area,
   landArea,
   levels,

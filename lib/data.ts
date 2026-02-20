@@ -13,6 +13,7 @@ export interface Property {
     description: string
     bedrooms?: number
     bathrooms?: number
+    halfBathrooms?: number
     area?: string // Construction area
     landArea?: string // Land/Terrain area
     levels?: number // Number of levels/stories

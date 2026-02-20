@@ -33,6 +33,7 @@ type Property = {
     description?: string
     bedrooms?: number
     bathrooms?: number
+    halfBathrooms?: number
     area?: string
     landArea?: string
     levels?: number
@@ -194,6 +195,14 @@ export function PropertyDetailView({ property, globalConfig }: Props) {
                                         <Bath className="w-4 h-4" /> Baños
                                     </div>
                                     <span className="text-3xl font-light">{property.bathrooms}</span>
+                                </div>
+                            )}
+                            {property.halfBathrooms !== undefined && (
+                                <div className="flex flex-col gap-2">
+                                    <div className="flex items-center gap-2 text-muted-foreground text-sm uppercase tracking-wider">
+                                        <Bath className="w-4 h-4" /> Medios Baños
+                                    </div>
+                                    <span className="text-3xl font-light">{property.halfBathrooms}</span>
                                 </div>
                             )}
                             {(property.area) && (

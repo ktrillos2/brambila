@@ -206,6 +206,7 @@ type Property = {
     description?: string
     bedrooms?: number
     bathrooms?: number
+    halfBathrooms?: number
     area?: string
     landArea?: string
     levels?: number
@@ -285,6 +286,12 @@ export const PropertyPDF = ({ property, qrCodeUrl, globalConfig }: { property: P
                             <View style={styles.gridItem}>
                                 <Text style={styles.gridLabel}>Baños</Text>
                                 <Text style={styles.gridValue}>{property.bathrooms}</Text>
+                            </View>
+                        )}
+                        {property.halfBathrooms !== undefined && (
+                            <View style={styles.gridItem}>
+                                <Text style={styles.gridLabel}>Medios Baños</Text>
+                                <Text style={styles.gridValue}>{property.halfBathrooms}</Text>
                             </View>
                         )}
                         {property.area && (
