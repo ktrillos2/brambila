@@ -105,11 +105,19 @@ export function PropertiesSection() {
           setIsVisible(true)
         }
       },
-      { threshold: 0.1 }
+      { threshold: 0.05 } // Reducir el threshold ya que el contenedor de propiedades puede ser muy alto y no cumplir el 10% inicial
     )
 
     if (sectionRef.current) {
       observer.observe(sectionRef.current)
+      
+      // Salvavidas: si la página principal está arriba (menos de 200px de scroll), forzar la visibilidad 
+      // para evitar que se quede en blanco hasta redimensionar.
+      setTimeout(() => {
+        if (window.scrollY < 200) {
+          setIsVisible(true)
+        }
+      }, 100)
     }
 
     return () => observer.disconnect()
