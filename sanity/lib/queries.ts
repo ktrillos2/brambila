@@ -125,7 +125,8 @@ export const PROPERTY_BY_SLUG_QUERY = groq`*[_type == "property" && slug.current
   condition,
   features,
 
-  mapEmbed,
+  latitude,
+  longitude,
   "measures": {
     "total": area,
     "north": "",

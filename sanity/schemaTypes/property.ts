@@ -142,10 +142,16 @@ export default defineType({
         }),
 
         defineField({
-            name: 'mapEmbed',
-            title: 'Mapa Insertado (Embed Iframe)',
-            description: 'Pega aquí el código HTML del iframe de Google Maps',
-            type: 'text',
+            name: 'latitude',
+            title: 'Latitud',
+            description: 'Ejemplo: 20.659698',
+            type: 'number',
+        }),
+        defineField({
+            name: 'longitude',
+            title: 'Longitud',
+            description: 'Ejemplo: -103.349609',
+            type: 'number',
         }),
 
         defineField({

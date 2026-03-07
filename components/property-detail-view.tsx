@@ -42,7 +42,8 @@ type Property = {
     condition?: string
     features?: string[]
 
-    mapEmbed?: string
+    latitude?: number
+    longitude?: number
     measures?: {
         total?: string
         north?: string
@@ -304,29 +305,21 @@ export function PropertyDetailView({ property, globalConfig }: Props) {
                         )}
 
                         {/* Location Map */}
-                        {(property.mapEmbed) && (
+                        {(property.latitude && property.longitude) && (
                             <div className="mt-12 pt-8 border-t border-white/10">
                                 <h3 className="text-xl font-light text-white mb-6 tracking-wide">Ubicación</h3>
                                 <div className="w-full aspect-video rounded-lg overflow-hidden bg-zinc-900 border border-white/10 relative">
-                                    {property.mapEmbed ? (
-                                        <div
-                                            className="w-full h-full [&>iframe]:w-full [&>iframe]:h-full [&>iframe]:border-0"
-                                            dangerouslySetInnerHTML={{ __html: property.mapEmbed }}
-                                        />
-                                    ) : (
-                                        <iframe
-                                            width="100%"
-                                            height="100%"
-                                            title="mapa-ubicacion"
-                                            src={`https://maps.google.com/maps?width=100%25&height=600&hl=es&q=${encodeURIComponent(property.location || "")}&t=&z=14&ie=UTF8&iwloc=B&output=embed`}
-                                            style={{ border: 0 }}
-                                            allowFullScreen
-                                            loading="lazy"
-                                            referrerPolicy="no-referrer-when-downgrade"
-                                            className="grayscale hover:grayscale-0 transition-all duration-500"
-                                        />
-                                    )}
-
+                                    <iframe
+                                        width="100%"
+                                        height="100%"
+                                        title="mapa-ubicacion"
+                                        src={`https://maps.google.com/maps?q=${property.latitude},${property.longitude}&z=15&output=embed`}
+                                        style={{ border: 0 }}
+                                        allowFullScreen
+                                        loading="lazy"
+                                        referrerPolicy="no-referrer-when-downgrade"
+                                        className="grayscale hover:grayscale-0 transition-all duration-500"
+                                    />
                                 </div>
                             </div>
                         )}

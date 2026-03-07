@@ -212,7 +212,8 @@ type Property = {
     levels?: number
     features?: string[]
     slug?: string
-    mapEmbed?: string
+    latitude?: number
+    longitude?: number
 }
 
 
