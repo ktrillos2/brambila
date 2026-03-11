@@ -3,6 +3,7 @@
 import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
 import { useEffect, useState } from "react"
+import { Footer } from "@/components/footer"
 
 export default function AvisoDePrivacidad() {
   const [isVisible, setIsVisible] = useState(false)
@@ -215,14 +216,7 @@ export default function AvisoDePrivacidad() {
         </div>
       </div>
 
-      {/* Footer */}
-      <footer className="bg-card border-t border-border py-8">
-        <div className="container mx-auto px-4 text-center">
-          <p className="text-muted-foreground text-sm">
-            © 2026 Brambila´s Inmobiliaria ®. Todos los derechos reservados.
-          </p>
-        </div>
-      </footer>
+      <Footer />
     </main>
   )
 }

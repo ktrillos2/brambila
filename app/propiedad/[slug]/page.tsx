@@ -29,6 +29,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
             description: property.description,
             images: property.image ? [property.image] : [],
         },
+        alternates: {
+            canonical: `/propiedad/${slug}`,
+        },
     }
 }
 

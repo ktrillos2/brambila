@@ -121,6 +121,9 @@ export const metadata: Metadata = {
   openGraph: {
     images: ['/logo-brambilas.png'],
   },
+  alternates: {
+    canonical: '/',
+  },
 }
 
 export const viewport: Viewport = {
