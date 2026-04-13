@@ -30,6 +30,7 @@ type Property = {
     images?: string[]
     video?: any
     videoUrl?: string
+    youtubeVideo?: string
     description?: string
     bedrooms?: number
     bathrooms?: number
@@ -95,6 +96,27 @@ export function PropertyDetailView({ property, globalConfig }: Props) {
             }
         } catch (err) {
             console.error("Error al compartir:", err)
+        }
+    }
+
+    const hasVideo = property.videoUrl || property.youtubeVideo
+
+    const getYoutubeEmbedUrl = (url: string) => {
+        try {
+            const urlObj = new URL(url)
+            if (urlObj.hostname.includes("youtube.com")) {
+                const videoId = urlObj.searchParams.get("v")
+                return videoId ? `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1` : url
+            } else if (urlObj.hostname.includes("youtu.be")) {
+                const videoId = urlObj.pathname.slice(1)
+                return videoId ? `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1` : url
+            } else if (urlObj.hostname.includes("vimeo.com")) {
+                const videoId = urlObj.pathname.split('/').pop()
+                return videoId ? `https://player.vimeo.com/video/${videoId}?autoplay=1&muted=1` : url
+            }
+            return url
+        } catch (e) {
+            return url
         }
     }
 
@@ -271,20 +293,34 @@ export function PropertyDetailView({ property, globalConfig }: Props) {
                         )}
 
                         {/* Video Section */}
-                        {property.videoUrl && (
+                        {hasVideo && (
                             <div className="mb-16">
                                 <h2 className="text-2xl font-sans mb-6 uppercase tracking-wide">Video Recorrido</h2>
                                 <div
                                     className="relative aspect-video w-full cursor-pointer group overflow-hidden rounded-lg bg-black"
                                     onClick={() => setShowVideo(true)}
                                 >
-                                    <video
-                                        src={`${property.videoUrl}#t=0.1`}
-                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                                        preload="metadata"
-                                        muted
-                                        playsInline
-                                    />
+                                    {property.youtubeVideo ? (
+                                        <div className="w-full h-full pointer-events-none relative">
+                                            <iframe
+                                                src={getYoutubeEmbedUrl(property.youtubeVideo)}
+                                                className="w-full h-full object-cover opacity-80"
+                                                allow="autoplay; encrypted-media"
+                                                allowFullScreen
+                                            />
+                                        </div>
+                                    ) : (
+                                        <video
+                                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                                            preload="none"
+                                            muted
+                                            playsInline
+                                            poster={`${property.images?.[0] || ''}`}
+                                        >
+                                            <source src={`${property.videoUrl}#t=0.1`} type="video/mp4" />
+                                        </video>
+                                    )}
+                                    
                                     <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors flex items-center justify-center">
                                         <div className="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                                             <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center shadow-lg">
@@ -380,7 +416,7 @@ export function PropertyDetailView({ property, globalConfig }: Props) {
             <Footer />
 
             {/* Video Modal */}
-            {showVideo && property.videoUrl && (
+            {showVideo && hasVideo && (
                 <div
                     className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 md:p-8 animate-in fade-in duration-300"
                     onClick={() => setShowVideo(false)}
@@ -399,13 +435,24 @@ export function PropertyDetailView({ property, globalConfig }: Props) {
                         className="relative w-full max-w-5xl aspect-video bg-black rounded-lg overflow-hidden shadow-2xl border border-white/10"
                         onClick={(e) => e.stopPropagation()}
                     >
-                        <video
-                            src={property.videoUrl}
-                            className="w-full h-full"
-                            controls
-                            autoPlay
-                            playsInline
-                        />
+                        {property.youtubeVideo ? (
+                            <iframe
+                                src={getYoutubeEmbedUrl(property.youtubeVideo).replace('&mute=1', '').replace('&muted=1', '')}
+                                className="w-full h-full"
+                                allow="autoplay; fullscreen; encrypted-media"
+                                allowFullScreen
+                            />
+                        ) : (
+                            <video
+                                className="w-full h-full"
+                                controls
+                                autoPlay
+                                playsInline
+                                preload="metadata"
+                            >
+                                <source src={property.videoUrl} type="video/mp4" />
+                            </video>
+                        )}
                     </div>
                 </div>
             )}
@@ -444,18 +491,22 @@ function GalleryCarousel({ images, title }: { images: string[], title: string })
                 </div>
 
                 {/* Navigation Buttons */}
-                <button
-                    className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/50 backdrop-blur-sm text-white flex items-center justify-center rounded-full opacity-0 group-hover:opacity-100 transition-opacity disabled:opacity-0 hover:bg-black/70"
-                    onClick={scrollPrev}
-                >
-                    <ArrowLeft className="w-5 h-5" />
-                </button>
-                <button
-                    className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/50 backdrop-blur-sm text-white flex items-center justify-center rounded-full opacity-0 group-hover:opacity-100 transition-opacity disabled:opacity-0 hover:bg-black/70"
-                    onClick={scrollNext}
-                >
-                    <ChevronRight className="w-5 h-5" />
-                </button>
+                {images.length > 1 && (
+                    <>
+                        <button
+                            className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/50 backdrop-blur-sm text-white flex items-center justify-center rounded-full transition-colors disabled:opacity-0 hover:bg-black/70"
+                            onClick={scrollPrev}
+                        >
+                            <ArrowLeft className="w-5 h-5" />
+                        </button>
+                        <button
+                            className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/50 backdrop-blur-sm text-white flex items-center justify-center rounded-full transition-colors disabled:opacity-0 hover:bg-black/70"
+                            onClick={scrollNext}
+                        >
+                            <ChevronRight className="w-5 h-5" />
+                        </button>
+                    </>
+                )}
             </div>
 
             {/* Lightbox Overlay */}

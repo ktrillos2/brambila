@@ -156,11 +156,18 @@ export default defineType({
 
         defineField({
             name: 'video',
-            title: 'Video de la Propiedad',
+            title: 'Video de la Propiedad (Archivo Local)',
             type: 'file',
             options: {
                 accept: 'video/*',
             },
+        }),
+        
+        defineField({
+            name: 'youtubeVideo',
+            title: 'Video de YouTube / Vimeo (Enlace)',
+            description: 'Pega aquí el enlace de YouTube o Vimeo (Ejemplo: https://www.youtube.com/watch?v=abcd123). Se usará si no hay un video local.',
+            type: 'url',
         }),
     ],
 })
