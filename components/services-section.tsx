@@ -4,6 +4,9 @@ import { Home, Key, FileText, ArrowRight, LucideIcon } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 import { client } from "@/sanity/lib/client"
 import { SERVICES_QUERY } from "@/sanity/lib/queries"
+import { useLanguage } from "@/context/language-context"
+import { translations } from "@/lib/translations"
+import { getLocalized } from "@/lib/sanity-i18n"
 import Link from "next/link"
 
 const ICON_MAP: Record<string, LucideIcon> = {
@@ -14,18 +17,21 @@ const ICON_MAP: Record<string, LucideIcon> = {
 
 type ServiceItem = {
   icon: string
-  title: string
-  description: string
+  title: any
+  description: any
 }
 
 type ServicesData = {
-  subtitle: string
-  title: string
-  description: string
+  subtitle: any
+  title: any
+  description: any
   servicesList: ServiceItem[]
 }
 
 export function ServicesSection() {
+  const { language } = useLanguage()
+  const t = translations[language]
+
   const [isVisible, setIsVisible] = useState(false)
   const sectionRef = useRef<HTMLElement>(null)
   const [data, setData] = useState<ServicesData | null>(null)
@@ -59,7 +65,11 @@ export function ServicesSection() {
     return () => observer.disconnect()
   }, [data])
 
-  if (!data) return null // Or loading state
+  if (!data) return null
+
+  const subtitle = getLocalized(data.subtitle, language) || t.services.badge
+  const title = getLocalized(data.title, language) || t.services.title
+  const description = getLocalized(data.description, language) || t.services.description
 
   return (
     <section
@@ -69,16 +79,17 @@ export function ServicesSection() {
     >
       <div className="container mx-auto px-6 md:px-12 lg:px-20">
         {/* Header */}
-        <div className={`text-center max-w-3xl mx-auto mb-16 transition-all duration-1000 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-          }`}>
+        <div className={`text-center max-w-3xl mx-auto mb-16 transition-all duration-1000 ${
+          isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+        }`}>
           <span className="text-primary text-xs font-medium tracking-[0.3em] uppercase">
-            {data.subtitle}
+            {subtitle}
           </span>
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-sans text-foreground mt-4 mb-6 tracking-wide">
-            {data.title}
+            {title}
           </h2>
           <p className="text-muted-foreground text-lg">
-            {data.description}
+            {description}
           </p>
         </div>
 
@@ -86,11 +97,15 @@ export function ServicesSection() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {data.servicesList?.map((service, index) => {
             const IconComponent = ICON_MAP[service.icon] || Home
+            const serviceTitle = getLocalized(service.title, language)
+            const serviceDesc = getLocalized(service.description, language)
+
             return (
               <div
-                key={service.title}
-                className={`group relative bg-card p-8 md:p-10 border border-border hover:border-primary/50 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"
-                  }`}
+                key={serviceTitle || index}
+                className={`group relative bg-card p-8 md:p-10 border border-border hover:border-primary/50 transition-all duration-700 ${
+                  isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"
+                }`}
                 style={{ transitionDelay: `${200 + index * 150}ms` }}
               >
                 {/* Icon */}
@@ -100,20 +115,20 @@ export function ServicesSection() {
 
                 {/* Title */}
                 <h3 className="text-xl md:text-2xl font-sans text-foreground mb-4 tracking-wide">
-                  {service.title}
+                  {serviceTitle}
                 </h3>
 
                 {/* Description */}
                 <p className="text-muted-foreground leading-relaxed mb-8">
-                  {service.description}
+                  {serviceDesc}
                 </p>
 
                 {/* CTA Link */}
                 <Link
-                  href="#contacto"
+                  href="/#contacto"
                   className="inline-flex items-center gap-2 text-primary text-sm font-medium tracking-wider uppercase group/link"
                 >
-                  <span>Saber más</span>
+                  <span>{t.services.learnMore}</span>
                   <ArrowRight className="w-4 h-4 transition-transform group-hover/link:translate-x-1" />
                 </Link>
               </div>

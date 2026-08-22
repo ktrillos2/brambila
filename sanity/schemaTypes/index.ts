@@ -1,4 +1,7 @@
 import { type SchemaTypeDefinition } from 'sanity'
+import localeString from './localeString'
+import localeText from './localeText'
+import localeArray from './localeArray'
 import globalConfig from './globalConfig'
 import hero from './hero'
 import property from './property'
@@ -10,5 +13,19 @@ import about from './about'
 import philosophy from './philosophy'
 
 export const schema: { types: SchemaTypeDefinition[] } = {
-  types: [globalConfig, hero, property, propertyConfigs, homeCollection, services, contact, about, philosophy],
+  types: [
+    localeString,
+    localeText,
+    localeArray,
+    globalConfig,
+    hero,
+    property,
+    propertyConfigs,
+    homeCollection,
+    services,
+    contact,
+    about,
+    philosophy,
+  ],
 }
+

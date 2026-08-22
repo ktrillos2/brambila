@@ -7,23 +7,23 @@ export default defineType({
     fields: [
         defineField({
             name: 'subtitle',
-            title: 'Subtítulo',
-            type: 'string',
+            title: 'Subtítulo (ES / EN)',
+            type: 'localeString',
         }),
         defineField({
             name: 'title',
-            title: 'Título',
-            type: 'string',
+            title: 'Título (ES / EN)',
+            type: 'localeString',
         }),
         defineField({
             name: 'description',
-            title: 'Descripción Principal',
-            type: 'text',
+            title: 'Descripción Principal (ES / EN)',
+            type: 'localeText',
         }),
         defineField({
             name: 'scheduleTitle',
-            title: 'Título Horario',
-            type: 'string',
+            title: 'Título Horario (ES / EN)',
+            type: 'localeString',
         }),
         defineField({
             name: 'schedule',
@@ -35,13 +35,13 @@ export default defineType({
                     fields: [
                         defineField({
                             name: 'days',
-                            title: 'Días',
-                            type: 'string',
+                            title: 'Días (ES / EN)',
+                            type: 'localeString',
                         }),
                         defineField({
                             name: 'hours',
-                            title: 'Horas',
-                            type: 'string',
+                            title: 'Horas (ES / EN)',
+                            type: 'localeString',
                         }),
                     ],
                 },

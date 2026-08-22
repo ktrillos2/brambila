@@ -4,13 +4,249 @@ import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
 import { useEffect, useState } from "react"
 import { Footer } from "@/components/footer"
+import { useLanguage } from "@/context/language-context"
+import { translations } from "@/lib/translations"
+import { LanguageSwitcher } from "@/components/language-switcher"
 
 export default function AvisoDePrivacidad() {
   const [isVisible, setIsVisible] = useState(false)
+  const { language } = useLanguage()
+  const t = translations[language]
 
   useEffect(() => {
     setIsVisible(true)
   }, [])
+
+  const isEn = language === "en"
+
+  const sections = isEn
+    ? [
+        {
+          title: "1. Personal Data Collected",
+          content: (
+            <>
+              <p>
+                For the purposes set forth in this Privacy Notice, we may collect your personal data in various ways:
+                when you provide it directly to us, when you visit our website or use our online services, and when
+                we obtain information through other sources permitted by law.
+              </p>
+              <p className="mt-4">Personal data we may collect includes:</p>
+              <ul className="mt-3 space-y-2">
+                {[
+                  "Full name",
+                  "Email address",
+                  "Phone number",
+                  "Address",
+                  "Tax identification details (in case of purchase/sale operations)"
+                ].map((item) => (
+                  <li key={item} className="flex items-center gap-3">
+                    <span className="w-1.5 h-1.5 bg-primary rounded-full flex-shrink-0" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </>
+          )
+        },
+        {
+          title: "2. Purposes of Data Processing",
+          content: (
+            <>
+              <p>Your personal data will be used for the following purposes:</p>
+              <ul className="mt-3 space-y-2">
+                {[
+                  "Identify you as a client or prospect",
+                  "Provide the requested real estate services",
+                  "Send information about properties that may be of interest to you",
+                  "Follow up on your requests and inquiries",
+                  "Draft purchase, lease, or brokerage contracts",
+                  "Comply with legal and fiscal obligations"
+                ].map((item) => (
+                  <li key={item} className="flex items-center gap-3">
+                    <span className="w-1.5 h-1.5 bg-primary rounded-full flex-shrink-0" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </>
+          )
+        },
+        {
+          title: "3. Data Transfer",
+          content: (
+            <p>
+              BRAMBILA´S INMOBILIARIA ® undertakes not to transfer your personal information to third parties
+              without your consent, except for the exceptions provided in article 37 of the Mexican Federal
+              Law on Protection of Personal Data Held by Private Parties.
+            </p>
+          )
+        },
+        {
+          title: "4. ARCO Rights",
+          content: (
+            <>
+              <p>
+                You have the right to know what personal data we hold about you, what we use it for, and the conditions
+                of its use (Access). Likewise, it is your right to request the correction of your personal information
+                (Rectification); that we delete it from our records (Cancellation); as well as oppose the use of your
+                personal data for specific purposes (Opposition).
+              </p>
+              <p className="mt-4">To exercise any ARCO rights, contact us at:</p>
+              <ul className="mt-3 space-y-2">
+                <li className="flex items-center gap-3">
+                  <span className="w-1.5 h-1.5 bg-primary rounded-full flex-shrink-0" />
+                  Email: <a href="mailto:brambilasinmobiliaria@gmail.com" className="text-primary hover:underline">brambilasinmobiliaria@gmail.com</a>
+                </li>
+                <li className="flex items-center gap-3">
+                  <span className="w-1.5 h-1.5 bg-primary rounded-full flex-shrink-0" />
+                  Phone: <a href="tel:+523213875653" className="text-primary hover:underline">(321) 387 56 53</a>
+                </li>
+              </ul>
+            </>
+          )
+        },
+        {
+          title: "5. Modifications to the Privacy Notice",
+          content: (
+            <>
+              <p>
+                We reserve the right to make changes or updates to this privacy notice at any time.
+                Modifications will be made available on our website.
+              </p>
+            </>
+          )
+        },
+        {
+          title: "6. Contact",
+          content: (
+            <>
+              <p>If you have any questions regarding this Privacy Notice, you can reach us at:</p>
+              <div className="mt-4 p-6 bg-card border border-border hover:border-primary/30 transition-colors">
+                <p className="font-semibold text-foreground text-lg">BRAMBILA´S INMOBILIARIA ®</p>
+                <div className="mt-3 space-y-1 text-muted-foreground">
+                  <p>Jalisco, Mexico</p>
+                  <p>Phone: <a href="tel:+523213875653" className="text-primary hover:underline">(321) 387 56 53</a></p>
+                  <p>Email: <a href="mailto:brambilasinmobiliaria@gmail.com" className="text-primary hover:underline">brambilasinmobiliaria@gmail.com</a></p>
+                </div>
+              </div>
+            </>
+          )
+        }
+      ]
+    : [
+        {
+          title: "1. Datos Personales Recabados",
+          content: (
+            <>
+              <p>
+                Para las finalidades señaladas en el presente Aviso de Privacidad, podemos recabar sus datos personales
+                de distintas formas: cuando usted nos los proporciona directamente, cuando visita nuestro sitio de
+                Internet o utiliza nuestros servicios en línea, y cuando obtenemos información a través de otras
+                fuentes que están permitidas por la ley.
+              </p>
+              <p className="mt-4">Los datos personales que podemos recabar incluyen:</p>
+              <ul className="mt-3 space-y-2">
+                {["Nombre completo", "Correo electrónico", "Número de teléfono", "Dirección", "Datos de identificación fiscal (en caso de operaciones de compraventa)"].map((item) => (
+                  <li key={item} className="flex items-center gap-3">
+                    <span className="w-1.5 h-1.5 bg-primary rounded-full flex-shrink-0" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </>
+          )
+        },
+        {
+          title: "2. Finalidades del Tratamiento de Datos",
+          content: (
+            <>
+              <p>Sus datos personales serán utilizados para las siguientes finalidades:</p>
+              <ul className="mt-3 space-y-2">
+                {[
+                  "Identificarle como cliente o prospecto",
+                  "Proporcionar los servicios inmobiliarios solicitados",
+                  "Enviar información sobre propiedades que puedan ser de su interés",
+                  "Dar seguimiento a sus solicitudes y consultas",
+                  "Elaborar contratos de compraventa, arrendamiento o intermediación",
+                  "Cumplir con obligaciones legales y fiscales"
+                ].map((item) => (
+                  <li key={item} className="flex items-center gap-3">
+                    <span className="w-1.5 h-1.5 bg-primary rounded-full flex-shrink-0" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </>
+          )
+        },
+        {
+          title: "3. Transferencia de Datos",
+          content: (
+            <p>
+              BRAMBILA´S INMOBILIARIA ® se compromete a no transferir su información personal a terceros sin
+              su consentimiento, salvo las excepciones previstas en el artículo 37 de la Ley Federal de
+              Protección de Datos Personales en Posesión de los Particulares, así como a realizar esta
+              transferencia en los términos que fija esa ley.
+            </p>
+          )
+        },
+        {
+          title: "4. Derechos ARCO",
+          content: (
+            <>
+              <p>
+                Usted tiene derecho a conocer qué datos personales tenemos de usted, para qué los utilizamos
+                y las condiciones del uso que les damos (Acceso). Asimismo, es su derecho solicitar la
+                corrección de su información personal en caso de que esté desactualizada, sea inexacta o
+                incompleta (Rectificación); que la eliminemos de nuestros registros o bases de datos cuando
+                considere que la misma no está siendo utilizada conforme a los principios, deberes y
+                obligaciones previstas en la normativa (Cancelación); así como oponerse al uso de sus datos
+                personales para fines específicos (Oposición).
+              </p>
+              <p className="mt-4">Para ejercer cualquiera de los derechos ARCO, puede contactarnos a través de:</p>
+              <ul className="mt-3 space-y-2">
+                <li className="flex items-center gap-3">
+                  <span className="w-1.5 h-1.5 bg-primary rounded-full flex-shrink-0" />
+                  Correo electrónico: <a href="mailto:brambilasinmobiliaria@gmail.com" className="text-primary hover:underline">brambilasinmobiliaria@gmail.com</a>
+                </li>
+                <li className="flex items-center gap-3">
+                  <span className="w-1.5 h-1.5 bg-primary rounded-full flex-shrink-0" />
+                  Teléfono: <a href="tel:+523213875653" className="text-primary hover:underline">(321) 387 56 53</a>
+                </li>
+              </ul>
+            </>
+          )
+        },
+        {
+          title: "5. Modificaciones al Aviso de Privacidad",
+          content: (
+            <>
+              <p>
+                Nos reservamos el derecho de efectuar en cualquier momento modificaciones o actualizaciones
+                al presente aviso de privacidad, para la atención de novedades legislativas, políticas
+                internas o nuevos requerimientos para la prestación u ofrecimiento de nuestros servicios.
+              </p>
+              <p className="mt-4">Las modificaciones estarán disponibles en nuestro sitio web.</p>
+            </>
+          )
+        },
+        {
+          title: "6. Contacto",
+          content: (
+            <>
+              <p>Si tiene alguna duda sobre este Aviso de Privacidad, puede contactarnos en:</p>
+              <div className="mt-4 p-6 bg-card border border-border hover:border-primary/30 transition-colors">
+                <p className="font-semibold text-foreground text-lg">BRAMBILA´S INMOBILIARIA ®</p>
+                <div className="mt-3 space-y-1 text-muted-foreground">
+                  <p>Jalisco, México</p>
+                  <p>Teléfono: <a href="tel:+523213875653" className="text-primary hover:underline">(321) 387 56 53</a></p>
+                  <p>Email: <a href="mailto:brambilasinmobiliaria@gmail.com" className="text-primary hover:underline">brambilasinmobiliaria@gmail.com</a></p>
+                </div>
+              </div>
+            </>
+          )
+        }
+      ]
 
   return (
     <main className="min-h-screen bg-background">
@@ -22,16 +258,18 @@ export default function AvisoDePrivacidad() {
             className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors group"
           >
             <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
-            <span className="text-sm tracking-wider uppercase">Volver al Inicio</span>
+            <span className="text-sm tracking-wider uppercase">{t.common.backToHome}</span>
           </Link>
 
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-2">
-            <div className="relative w-8 h-8 border border-primary/50 flex items-center justify-center">
-              <span className="text-primary font-bold">B</span>
-            </div>
-            <span className="text-foreground font-semibold hidden sm:block">Brambila´s</span>
-          </Link>
+          <div className="flex items-center gap-4">
+            <LanguageSwitcher />
+            <Link href="/" className="flex items-center gap-2">
+              <div className="relative w-8 h-8 border border-primary/50 flex items-center justify-center">
+                <span className="text-primary font-bold">B</span>
+              </div>
+              <span className="text-foreground font-semibold hidden sm:block">Brambila´s</span>
+            </Link>
+          </div>
         </div>
       </header>
 
@@ -39,17 +277,18 @@ export default function AvisoDePrivacidad() {
       <div className="relative py-20 bg-secondary overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent" />
         <div className="container mx-auto px-4 relative z-10">
-          <div className={`max-w-4xl mx-auto text-center transition-all duration-1000 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-            }`}>
+          <div className={`max-w-4xl mx-auto text-center transition-all duration-1000 ${
+            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+          }`}>
             <span className="text-primary text-xs font-medium tracking-[0.3em] uppercase">
-              Legal
+              {t.legal.privacyBadge}
             </span>
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-sans font-bold text-foreground mt-4 mb-4">
-              Aviso de Privacidad
+              {t.legal.privacyTitle}
             </h1>
             <div className="w-16 h-1 bg-primary mx-auto mb-6" />
             <p className="text-muted-foreground">
-              Tu privacidad es importante para nosotros
+              {t.legal.privacySubtitle}
             </p>
           </div>
         </div>
@@ -57,133 +296,32 @@ export default function AvisoDePrivacidad() {
 
       {/* Content */}
       <div className="container mx-auto px-6 md:px-12 lg:px-20 py-16">
-        <div className={`max-w-4xl mx-auto transition-all duration-1000 delay-200 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-          }`}>
+        <div className={`max-w-4xl mx-auto transition-all duration-1000 delay-200 ${
+          isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+        }`}>
           <div className="space-y-8">
             <p className="text-muted-foreground leading-relaxed text-lg">
-              En cumplimiento de la Ley Federal de Protección de Datos Personales en Posesión de Particulares,
-              <strong className="text-foreground"> BRAMBILA´S INMOBILIARIA ®</strong>, con domicilio en el estado de Jalisco, México,
-              pone a su disposición el presente Aviso de Privacidad.
+              {isEn ? (
+                <>
+                  In compliance with the Federal Law on Protection of Personal Data Held by Private Parties,
+                  <strong className="text-foreground"> BRAMBILA´S INMOBILIARIA ®</strong>, located in the state of Jalisco, Mexico,
+                  provides you with this Privacy Notice.
+                </>
+              ) : (
+                <>
+                  En cumplimiento de la Ley Federal de Protección de Datos Personales en Posesión de Particulares,
+                  <strong className="text-foreground"> BRAMBILA´S INMOBILIARIA ®</strong>, con domicilio en el estado de Jalisco, México,
+                  pone a su disposición el presente Aviso de Privacidad.
+                </>
+              )}
             </p>
 
-            {[
-              {
-                title: "1. Datos Personales Recabados",
-                content: (
-                  <>
-                    <p>
-                      Para las finalidades señaladas en el presente Aviso de Privacidad, podemos recabar sus datos personales
-                      de distintas formas: cuando usted nos los proporciona directamente, cuando visita nuestro sitio de
-                      Internet o utiliza nuestros servicios en línea, y cuando obtenemos información a través de otras
-                      fuentes que están permitidas por la ley.
-                    </p>
-                    <p className="mt-4">Los datos personales que podemos recabar incluyen:</p>
-                    <ul className="mt-3 space-y-2">
-                      {["Nombre completo", "Correo electrónico", "Número de teléfono", "Dirección", "Datos de identificación fiscal (en caso de operaciones de compraventa)"].map((item) => (
-                        <li key={item} className="flex items-center gap-3">
-                          <span className="w-1.5 h-1.5 bg-primary rounded-full flex-shrink-0" />
-                          {item}
-                        </li>
-                      ))}
-                    </ul>
-                  </>
-                )
-              },
-              {
-                title: "2. Finalidades del Tratamiento de Datos",
-                content: (
-                  <>
-                    <p>Sus datos personales serán utilizados para las siguientes finalidades:</p>
-                    <ul className="mt-3 space-y-2">
-                      {[
-                        "Identificarle como cliente o prospecto",
-                        "Proporcionar los servicios inmobiliarios solicitados",
-                        "Enviar información sobre propiedades que puedan ser de su interés",
-                        "Dar seguimiento a sus solicitudes y consultas",
-                        "Elaborar contratos de compraventa, arrendamiento o intermediación",
-                        "Cumplir con obligaciones legales y fiscales"
-                      ].map((item) => (
-                        <li key={item} className="flex items-center gap-3">
-                          <span className="w-1.5 h-1.5 bg-primary rounded-full flex-shrink-0" />
-                          {item}
-                        </li>
-                      ))}
-                    </ul>
-                  </>
-                )
-              },
-              {
-                title: "3. Transferencia de Datos",
-                content: (
-                  <p>
-                    BRAMBILA´S INMOBILIARIA ® se compromete a no transferir su información personal a terceros sin
-                    su consentimiento, salvo las excepciones previstas en el artículo 37 de la Ley Federal de
-                    Protección de Datos Personales en Posesión de los Particulares, así como a realizar esta
-                    transferencia en los términos que fija esa ley.
-                  </p>
-                )
-              },
-              {
-                title: "4. Derechos ARCO",
-                content: (
-                  <>
-                    <p>
-                      Usted tiene derecho a conocer qué datos personales tenemos de usted, para qué los utilizamos
-                      y las condiciones del uso que les damos (Acceso). Asimismo, es su derecho solicitar la
-                      corrección de su información personal en caso de que esté desactualizada, sea inexacta o
-                      incompleta (Rectificación); que la eliminemos de nuestros registros o bases de datos cuando
-                      considere que la misma no está siendo utilizada conforme a los principios, deberes y
-                      obligaciones previstas en la normativa (Cancelación); así como oponerse al uso de sus datos
-                      personales para fines específicos (Oposición).
-                    </p>
-                    <p className="mt-4">Para ejercer cualquiera de los derechos ARCO, puede contactarnos a través de:</p>
-                    <ul className="mt-3 space-y-2">
-                      <li className="flex items-center gap-3">
-                        <span className="w-1.5 h-1.5 bg-primary rounded-full flex-shrink-0" />
-                        Correo electrónico: <a href="mailto:brambilasinmobiliaria@gmail.com" className="text-primary hover:underline">brambilasinmobiliaria@gmail.com</a>
-                      </li>
-                      <li className="flex items-center gap-3">
-                        <span className="w-1.5 h-1.5 bg-primary rounded-full flex-shrink-0" />
-                        Teléfono: <a href="tel:+523213875653" className="text-primary hover:underline">(321) 387 56 53</a>
-                      </li>
-                    </ul>
-                  </>
-                )
-              },
-              {
-                title: "5. Modificaciones al Aviso de Privacidad",
-                content: (
-                  <>
-                    <p>
-                      Nos reservamos el derecho de efectuar en cualquier momento modificaciones o actualizaciones
-                      al presente aviso de privacidad, para la atención de novedades legislativas, políticas
-                      internas o nuevos requerimientos para la prestación u ofrecimiento de nuestros servicios.
-                    </p>
-                    <p className="mt-4">Las modificaciones estarán disponibles en nuestro sitio web.</p>
-                  </>
-                )
-              },
-              {
-                title: "6. Contacto",
-                content: (
-                  <>
-                    <p>Si tiene alguna duda sobre este Aviso de Privacidad, puede contactarnos en:</p>
-                    <div className="mt-4 p-6 bg-card border border-border hover:border-primary/30 transition-colors">
-                      <p className="font-semibold text-foreground text-lg">BRAMBILA´S INMOBILIARIA ®</p>
-                      <div className="mt-3 space-y-1 text-muted-foreground">
-                        <p>Jalisco, México</p>
-                        <p>Teléfono: <a href="tel:+523213875653" className="text-primary hover:underline">(321) 387 56 53</a></p>
-                        <p>Email: <a href="mailto:brambilasinmobiliaria@gmail.com" className="text-primary hover:underline">brambilasinmobiliaria@gmail.com</a></p>
-                      </div>
-                    </div>
-                  </>
-                )
-              }
-            ].map((section, index) => (
+            {sections.map((section, index) => (
               <section
                 key={section.title}
-                className={`p-8 bg-card border border-border hover:border-primary/30 transition-all duration-500 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-                  }`}
+                className={`p-8 bg-card border border-border hover:border-primary/30 transition-all duration-500 ${
+                  isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+                }`}
                 style={{ transitionDelay: `${300 + index * 100}ms` }}
               >
                 <h2 className="text-xl font-semibold text-foreground mb-4 flex items-center gap-3">
@@ -199,7 +337,7 @@ export default function AvisoDePrivacidad() {
             ))}
 
             <p className="text-sm text-muted-foreground pt-8 border-t border-border">
-              Última actualización: Enero 2026
+              {isEn ? "Last updated: January 2026" : "Última actualización: Enero 2026"}
             </p>
           </div>
 
@@ -210,7 +348,7 @@ export default function AvisoDePrivacidad() {
               className="inline-flex items-center gap-3 px-8 py-4 bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-all duration-300 hover:translate-y-[-2px] hover:shadow-lg hover:shadow-primary/20 text-sm tracking-wider uppercase group"
             >
               <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
-              Volver al Inicio
+              {t.common.backToHome}
             </Link>
           </div>
         </div>

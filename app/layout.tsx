@@ -3,6 +3,7 @@ import type { Metadata, Viewport } from 'next'
 import localFont from 'next/font/local'
 import { Playfair_Display } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
+import { LanguageProvider } from "@/context/language-context"
 import { WhatsAppButton } from "@/components/whatsapp-button"
 import './globals.css'
 
@@ -140,10 +141,13 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body className={`${gotham.variable} ${playfair.variable} font-sans antialiased`}>
-        {children}
-        <WhatsAppButton />
-        <Analytics />
+        <LanguageProvider>
+          {children}
+          <WhatsAppButton />
+          <Analytics />
+        </LanguageProvider>
       </body>
     </html>
   )
 }
+

@@ -7,26 +7,26 @@ export default defineType({
     fields: [
         defineField({
             name: 'title1',
-            title: 'Título Principal (Línea 1)',
-            type: 'string',
+            title: 'Título Principal - Línea 1 (ES / EN)',
+            type: 'localeString',
             description: 'Primera línea del título principal (ej. Brambila\'s)',
         }),
         defineField({
             name: 'title2',
-            title: 'Título Principal (Línea 2)',
-            type: 'string',
-            description: 'Segunda línea del título principal (ej. INMOBILIARIA)',
+            title: 'Título Principal - Línea 2 (ES / EN)',
+            type: 'localeString',
+            description: 'Segunda línea del título principal (ej. INMOBILIARIA / REAL ESTATE)',
         }),
         defineField({
             name: 'subtitle',
-            title: 'Subtítulo',
-            type: 'text',
+            title: 'Subtítulo (ES / EN)',
+            type: 'localeText',
             description: 'Texto descriptivo debajo del título',
         }),
         defineField({
             name: 'searchPlaceholder',
-            title: 'Placeholder del Buscador',
-            type: 'string',
+            title: 'Placeholder del Buscador (ES / EN)',
+            type: 'localeString',
             description: 'Texto que aparece en la caja de búsqueda',
         }),
         defineField({
@@ -47,8 +47,8 @@ export default defineType({
                         }),
                         defineField({
                             name: 'alt',
-                            title: 'Texto Alternativo',
-                            type: 'string',
+                            title: 'Texto Alternativo (ES / EN)',
+                            type: 'localeString',
                         }),
                     ],
                 },

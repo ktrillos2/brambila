@@ -7,21 +7,18 @@ export default defineType({
     fields: [
         defineField({
             name: 'title',
-            title: 'Título',
-            type: 'string',
-            initialValue: 'Nosotros',
+            title: 'Título (ES / EN)',
+            type: 'localeString',
         }),
         defineField({
             name: 'description1',
-            title: 'Descripción (Párrafo 1)',
-            type: 'text',
-            rows: 4,
+            title: 'Descripción - Párrafo 1 (ES / EN)',
+            type: 'localeText',
         }),
         defineField({
             name: 'description2',
-            title: 'Descripción (Párrafo 2)',
-            type: 'text',
-            rows: 4,
+            title: 'Descripción - Párrafo 2 (ES / EN)',
+            type: 'localeText',
         }),
         defineField({
             name: 'features',
@@ -33,8 +30,8 @@ export default defineType({
                     fields: [
                         defineField({
                             name: 'label',
-                            title: 'Etiqueta',
-                            type: 'string',
+                            title: 'Etiqueta (ES / EN)',
+                            type: 'localeString',
                         }),
                         defineField({
                             name: 'icon',
@@ -46,7 +43,7 @@ export default defineType({
                     ],
                     preview: {
                         select: {
-                            title: 'label',
+                            title: 'label.es',
                             subtitle: 'icon'
                         }
                     }

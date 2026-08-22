@@ -7,15 +7,13 @@ export default defineType({
     fields: [
         defineField({
             name: 'title',
-            title: 'Título',
-            type: 'string',
-            initialValue: 'COLECCIÓN PRIVADA',
+            title: 'Título (ES / EN)',
+            type: 'localeString',
         }),
         defineField({
             name: 'subtitle',
-            title: 'Subtítulo',
-            type: 'string',
-            initialValue: 'Curaduría Exclusiva',
+            title: 'Subtítulo (ES / EN)',
+            type: 'localeString',
         }),
         defineField({
             name: 'featuredProperties',

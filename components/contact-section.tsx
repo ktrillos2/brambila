@@ -4,30 +4,34 @@ import React from "react"
 import { useState, useEffect, useRef } from "react"
 import { Send, Phone, Mail, MapPin, ArrowRight, CheckCircle2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
-
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { toast } from "sonner"
-
 import { client } from "@/sanity/lib/client"
 import { CONTACT_QUERY } from "@/sanity/lib/queries"
+import { useLanguage } from "@/context/language-context"
+import { translations } from "@/lib/translations"
+import { getLocalized } from "@/lib/sanity-i18n"
 
 type ContactData = {
   contact: {
-    subtitle: string
-    title: string
-    description: string
-    scheduleTitle: string
-    schedule: { days: string; hours: string }[]
+    subtitle: any
+    title: any
+    description: any
+    scheduleTitle: any
+    schedule: { days: any; hours: any }[]
   }
   global: {
     phone: string
     email: string
-    address: string
+    address: any
   }
 }
 
 export function ContactSection() {
+  const { language } = useLanguage()
+  const t = translations[language]
+
   const [isVisible, setIsVisible] = useState(false)
   const [focusedField, setFocusedField] = useState<string | null>(null)
   const sectionRef = useRef<HTMLElement>(null)
@@ -39,8 +43,6 @@ export function ContactSection() {
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
-
-
   const [data, setData] = useState<ContactData | null>(null)
 
   useEffect(() => {
@@ -70,7 +72,7 @@ export function ContactSection() {
     }
 
     return () => observer.disconnect()
-  }, [data]) // Wait for data to be ready
+  }, [data])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -89,12 +91,8 @@ export function ContactSection() {
         throw new Error("Error al enviar el mensaje")
       }
 
-      toast.success("¡Mensaje enviado con éxito!", {
-        description: "Nos pondremos en contacto contigo pronto.",
-      })
-
-      toast.success("¡Mensaje enviado con éxito!", {
-        description: "Nos pondremos en contacto contigo pronto.",
+      toast.success(t.contact.toasts.successTitle, {
+        description: t.contact.toasts.successDesc,
       })
 
       setIsSuccess(true)
@@ -102,34 +100,39 @@ export function ContactSection() {
 
     } catch (error) {
       console.error(error)
-      toast.error("Error al enviar el mensaje", {
-        description: "Por favor intenta nuevamente más tarde.",
+      toast.error(t.contact.toasts.errorTitle, {
+        description: t.contact.toasts.errorDesc,
       })
     } finally {
       setIsSubmitting(false)
     }
   }
 
+  if (!data) return null
 
-  if (!data) return null // Or loading skeleton
+  const subtitle = getLocalized(data.contact?.subtitle, language) || t.contact.badge
+  const title = getLocalized(data.contact?.title, language) || t.contact.title
+  const description = getLocalized(data.contact?.description, language) || t.contact.description
+  const scheduleTitle = getLocalized(data.contact?.scheduleTitle, language) || t.contact.schedule
+  const address = getLocalized(data.global?.address, language) || "Jalisco, México"
 
   const contactInfo = [
     {
       icon: Phone,
-      title: "Teléfono",
+      title: t.contact.phone,
       value: data.global.phone,
-      href: `tel:${data.global.phone.replace(/\D/g, "")}`
+      href: data.global.phone ? `tel:${data.global.phone.replace(/\D/g, "")}` : null
     },
     {
       icon: Mail,
-      title: "Email",
+      title: t.contact.email,
       value: data.global.email,
-      href: `mailto:${data.global.email}`
+      href: data.global.email ? `mailto:${data.global.email}` : null
     },
     {
       icon: MapPin,
-      title: "Ubicación",
-      value: data.global.address,
+      title: t.contact.location,
+      value: address,
       href: null
     }
   ]
@@ -154,29 +157,32 @@ export function ContactSection() {
       <div className="container mx-auto px-6 md:px-12 lg:px-20 relative z-10">
         <div className="max-w-6xl mx-auto">
           {/* Header */}
-          <div className={`text-center max-w-3xl mx-auto mb-16 transition-all duration-1000 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-            }`}>
+          <div className={`text-center max-w-3xl mx-auto mb-16 transition-all duration-1000 ${
+            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+          }`}>
             <span className="text-primary text-xs font-medium tracking-[0.3em] uppercase">
-              {data.contact.subtitle}
+              {subtitle}
             </span>
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-sans text-foreground mt-4 mb-6 tracking-wide">
-              {data.contact.title}
+              {title}
             </h2>
             <div className="w-16 h-1 bg-primary mx-auto mb-6" />
             <p className="text-muted-foreground text-lg">
-              {data.contact.description}
+              {description}
             </p>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-12">
             {/* Contact Info */}
-            <div className={`lg:col-span-2 space-y-6 transition-all duration-1000 delay-200 ${isVisible ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-12"
-              }`}>
+            <div className={`lg:col-span-2 space-y-6 transition-all duration-1000 delay-200 ${
+              isVisible ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-12"
+            }`}>
               {contactInfo.map((item, index) => (
                 <div
-                  key={item.title}
-                  className={`group bg-card p-6 border border-border hover:border-primary/50 transition-all duration-500 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-                    }`}
+                  key={item.title + index}
+                  className={`group bg-card p-6 border border-border hover:border-primary/50 transition-all duration-500 ${
+                    isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+                  }`}
                   style={{ transitionDelay: `${300 + index * 100}ms` }}
                 >
                   <div className="flex items-start gap-4">
@@ -201,17 +207,19 @@ export function ContactSection() {
                 </div>
               ))}
 
-              {/* Map or Additional Info */}
-              <div className={`bg-card p-6 border border-border transition-all duration-500 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+              {/* Schedule Card */}
+              <div
+                className={`bg-card p-6 border border-border transition-all duration-500 ${
+                  isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
                 }`}
                 style={{ transitionDelay: "600ms" }}
               >
-                <h3 className="text-foreground font-semibold mb-3">{data.contact.scheduleTitle}</h3>
+                <h3 className="text-foreground font-semibold mb-3">{scheduleTitle}</h3>
                 <div className="space-y-2 text-muted-foreground text-sm">
-                  {data.contact.schedule?.map((scheduleItem, i) => (
+                  {data.contact?.schedule?.map((scheduleItem, i) => (
                     <p key={i} className="flex justify-between">
-                      <span>{scheduleItem.days}</span>
-                      <span>{scheduleItem.hours}</span>
+                      <span>{getLocalized(scheduleItem.days, language)}</span>
+                      <span>{getLocalized(scheduleItem.hours, language)}</span>
                     </p>
                   ))}
                 </div>
@@ -219,39 +227,39 @@ export function ContactSection() {
             </div>
 
             {/* Contact Form */}
-            {/* Contact Form */}
-            <div className={`lg:col-span-3 transition-all duration-1000 delay-300 ${isVisible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-12"
-              }`}>
+            <div className={`lg:col-span-3 transition-all duration-1000 delay-300 ${
+              isVisible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-12"
+            }`}>
               {isSuccess ? (
                 <div className="bg-card p-12 border border-border h-full flex flex-col items-center justify-center text-center animate-in fade-in zoom-in duration-500">
                   <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mb-6">
                     <CheckCircle2 className="w-10 h-10 text-primary" />
                   </div>
-                  <h3 className="text-2xl font-sans uppercase tracking-wide mb-4">¡Mensaje Enviado!</h3>
+                  <h3 className="text-2xl font-sans uppercase tracking-wide mb-4">{t.contact.success.title}</h3>
                   <p className="text-muted-foreground mb-8 max-w-sm mx-auto">
-                    Gracias por contactarnos. Hemos recibido tu mensaje y nuestro equipo se pondrá en contacto contigo a la brevedad posible.
+                    {t.contact.success.description}
                   </p>
                   <Button
                     onClick={() => setIsSuccess(false)}
                     variant="outline"
                     className="border-primary text-primary hover:bg-primary hover:text-primary-foreground uppercase tracking-widest text-xs font-bold"
                   >
-                    Enviar otro mensaje
+                    {t.contact.success.sendAnother}
                   </Button>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="bg-card p-8 border border-border">
-
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                     <div className="relative">
                       <label
                         htmlFor="name"
-                        className={`absolute left-4 transition-all duration-300 pointer-events-none ${focusedField === "name" || formData.name
-                          ? "-top-2.5 text-xs bg-card px-2 text-primary"
-                          : "top-4 text-muted-foreground text-sm"
-                          }`}
+                        className={`absolute left-4 transition-all duration-300 pointer-events-none ${
+                          focusedField === "name" || formData.name
+                            ? "-top-2.5 text-xs bg-card px-2 text-primary"
+                            : "top-4 text-muted-foreground text-sm"
+                        }`}
                       >
-                        Nombre completo *
+                        {t.contact.form.fullName}
                       </label>
                       <Input
                         id="name"
@@ -264,17 +272,17 @@ export function ContactSection() {
                         onBlur={() => setFocusedField(null)}
                         className="bg-transparent border-border focus:border-primary h-14 pt-4"
                       />
-
                     </div>
                     <div className="relative">
                       <label
                         htmlFor="email"
-                        className={`absolute left-4 transition-all duration-300 pointer-events-none ${focusedField === "email" || formData.email
-                          ? "-top-2.5 text-xs bg-card px-2 text-primary"
-                          : "top-4 text-muted-foreground text-sm"
-                          }`}
+                        className={`absolute left-4 transition-all duration-300 pointer-events-none ${
+                          focusedField === "email" || formData.email
+                            ? "-top-2.5 text-xs bg-card px-2 text-primary"
+                            : "top-4 text-muted-foreground text-sm"
+                        }`}
                       >
-                        Correo electrónico *
+                        {t.contact.form.email}
                       </label>
                       <Input
                         id="email"
@@ -287,19 +295,19 @@ export function ContactSection() {
                         onBlur={() => setFocusedField(null)}
                         className="bg-transparent border-border focus:border-primary h-14 pt-4"
                       />
-
                     </div>
                   </div>
 
                   <div className="mb-6 relative">
                     <label
                       htmlFor="phone"
-                      className={`absolute left-4 transition-all duration-300 pointer-events-none ${focusedField === "phone" || formData.phone
-                        ? "-top-2.5 text-xs bg-card px-2 text-primary"
-                        : "top-4 text-muted-foreground text-sm"
-                        }`}
+                      className={`absolute left-4 transition-all duration-300 pointer-events-none ${
+                        focusedField === "phone" || formData.phone
+                          ? "-top-2.5 text-xs bg-card px-2 text-primary"
+                          : "top-4 text-muted-foreground text-sm"
+                      }`}
                     >
-                      Teléfono
+                      {t.contact.form.phone}
                     </label>
                     <Input
                       id="phone"
@@ -311,18 +319,18 @@ export function ContactSection() {
                       onBlur={() => setFocusedField(null)}
                       className="bg-transparent border-border focus:border-primary h-14 pt-4"
                     />
-
                   </div>
 
                   <div className="mb-6 relative">
                     <label
                       htmlFor="message"
-                      className={`absolute left-4 transition-all duration-300 pointer-events-none ${focusedField === "message" || formData.message
-                        ? "-top-2.5 text-xs bg-card px-2 text-primary"
-                        : "top-4 text-muted-foreground text-sm"
-                        }`}
+                      className={`absolute left-4 transition-all duration-300 pointer-events-none ${
+                        focusedField === "message" || formData.message
+                          ? "-top-2.5 text-xs bg-card px-2 text-primary"
+                          : "top-4 text-muted-foreground text-sm"
+                      }`}
                     >
-                      Mensaje *
+                      {t.contact.form.message}
                     </label>
                     <Textarea
                       id="message"
@@ -335,7 +343,6 @@ export function ContactSection() {
                       onBlur={() => setFocusedField(null)}
                       className="bg-transparent border-border focus:border-primary resize-none pt-6"
                     />
-
                   </div>
 
                   <Button
@@ -344,13 +351,11 @@ export function ContactSection() {
                     className="w-full h-14 bg-primary text-primary-foreground hover:bg-primary/90 font-medium text-sm tracking-wider uppercase group transition-all duration-300 hover:shadow-lg hover:shadow-primary/20 disabled:opacity-70 disabled:cursor-not-allowed"
                   >
                     <Send className={`h-5 w-5 mr-2 ${isSubmitting ? 'animate-pulse' : 'group-hover:translate-x-1'} transition-transform`} />
-                    {isSubmitting ? "Enviando..." : "Enviar Mensaje"}
+                    {isSubmitting ? t.contact.form.submitting : t.contact.form.submit}
                   </Button>
-
                 </form>
               )}
             </div>
-
           </div>
         </div>
       </div>

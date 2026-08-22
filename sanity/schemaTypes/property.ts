@@ -7,29 +7,29 @@ export default defineType({
     fields: [
         defineField({
             name: 'title',
-            title: 'Título',
-            type: 'string',
+            title: 'Título (ES / EN)',
+            type: 'localeString',
         }),
         defineField({
             name: 'slug',
             title: 'Slug',
             type: 'slug',
             options: {
-                source: 'title',
+                source: (doc: any) => doc.title?.es || doc.title || '',
                 maxLength: 96,
             },
             validation: (Rule) => Rule.required(),
         }),
         defineField({
             name: 'location',
-            title: 'Ubicación',
-            type: 'string',
+            title: 'Ubicación (ES / EN)',
+            type: 'localeString',
         }),
         defineField({
             name: 'locationPDF',
-            title: 'Ubicación para Ficha (PDF)',
+            title: 'Ubicación para Ficha - PDF (ES / EN)',
             description: 'Si se llena, esta ubicación aparecerá en el PDF en lugar de la ubicación general.',
-            type: 'string',
+            type: 'localeString',
         }),
 
         defineField({
@@ -85,8 +85,8 @@ export default defineType({
         }),
         defineField({
             name: 'description',
-            title: 'Descripción',
-            type: 'text',
+            title: 'Descripción (ES / EN)',
+            type: 'localeText',
         }),
         defineField({
             name: 'bedrooms',
@@ -126,19 +126,18 @@ export default defineType({
         }),
         defineField({
             name: 'sector',
-            title: 'Sector',
-            type: 'string',
+            title: 'Sector (ES / EN)',
+            type: 'localeString',
         }),
         defineField({
             name: 'condition',
-            title: 'Condición',
-            type: 'string',
+            title: 'Condición (ES / EN)',
+            type: 'localeString',
         }),
         defineField({
             name: 'features',
-            title: 'Características',
-            type: 'array',
-            of: [{ type: 'string' }],
+            title: 'Características y Amenidades (ES / EN)',
+            type: 'localeArray',
         }),
 
         defineField({

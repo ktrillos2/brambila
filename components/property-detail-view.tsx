@@ -1,37 +1,38 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Image from "next/image"
 import Link from "next/link"
-import { ArrowLeft, MapPin, Bed, Bath, Maximize, LandPlot, Ruler, Compass, ChevronRight, X, Play, Layers, Share2, FileDown } from "lucide-react"
+import { ArrowLeft, MapPin, Bed, Bath, Maximize, LandPlot, Ruler, ChevronRight, X, Play, Layers, Share2, FileDown } from "lucide-react"
 import useEmblaCarousel from "embla-carousel-react"
 import { PDFDownloadLink } from "@react-pdf/renderer"
 import QRCode from "qrcode"
 import { PropertyPDF } from "@/components/property-pdf"
-import { useEffect } from "react"
-
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { formatPrice } from "@/lib/utils"
+import { useLanguage } from "@/context/language-context"
+import { translations } from "@/lib/translations"
+import { getLocalized, getLocalizedArray } from "@/lib/sanity-i18n"
+import { toast } from "sonner"
 
 type Property = {
     id: string
-    title: string
+    title: any
     slug: string
-    location: string
-    locationPDF?: string
+    location: any
+    locationPDF?: any
     price: string
     currency?: string
-
-    tag: string
-    status: string
-    type: string
+    tag: any
+    status: any
+    type: any
     image: string
     images?: string[]
     video?: any
     videoUrl?: string
     youtubeVideo?: string
-    description?: string
+    description?: any
     bedrooms?: number
     bathrooms?: number
     halfBathrooms?: number
@@ -39,10 +40,9 @@ type Property = {
     landArea?: string
     levels?: number
     code?: string
-    sector?: string
-    condition?: string
-    features?: string[]
-
+    sector?: any
+    condition?: any
+    features?: any
     latitude?: number
     longitude?: number
     measures?: {
@@ -53,7 +53,7 @@ type Property = {
         west?: string
     }
     featured?: boolean
-    priceLabel?: string
+    priceLabel?: any
 }
 
 type Props = {
@@ -62,40 +62,62 @@ type Props = {
 }
 
 export function PropertyDetailView({ property, globalConfig }: Props) {
+    const { language } = useLanguage()
+    const t = translations[language]
 
     const [showVideo, setShowVideo] = useState(false)
     const [qrCodeUrl, setQrCodeUrl] = useState("")
     const [isClient, setIsClient] = useState(false)
 
+    const title = getLocalized(property.title, language)
+    const location = getLocalized(property.location, language)
+    const locationPDF = getLocalized(property.locationPDF, language)
+    const description = getLocalized(property.description, language)
+    const sector = getLocalized(property.sector, language)
+    const condition = getLocalized(property.condition, language)
+    const features = getLocalizedArray(property.features, language)
+    const priceLabel = getLocalized(property.priceLabel, language)
+
+    const rawTag = getLocalized(property.tag, language) || property.tag || "Venta"
+    const isRent = rawTag.toLowerCase().includes("alquiler") || rawTag.toLowerCase().includes("rent")
+    const displayTag = isRent ? t.property.rent : t.property.sale
+
+    const rawType = typeof property.type === "object" ? (property.type.es || "") : (property.type || "")
+    const displayType = (t.property.types as Record<string, string>)[rawType] || getLocalized(property.type, language) || rawType
+
+    const rawStatus = typeof property.status === "object" ? (property.status.es || "") : (property.status || "")
+    const isStatusRent = rawStatus.toLowerCase().includes("alquiler") || rawStatus.toLowerCase().includes("rent")
+    const displayStatus = isStatusRent ? t.property.rent : t.property.sale
+
     useEffect(() => {
         setIsClient(true)
-        // Generate QR Code
-        QRCode.toDataURL(window.location.href)
-            .then(url => {
-                setQrCodeUrl(url)
-            })
-            .catch(err => {
-                console.error("Error generating QR code", err)
-            })
+        if (typeof window !== "undefined") {
+            QRCode.toDataURL(window.location.href)
+                .then(url => {
+                    setQrCodeUrl(url)
+                })
+                .catch(err => {
+                    console.error("Error generating QR code", err)
+                })
+        }
     }, [])
-
 
     const handleShare = async () => {
         const shareData = {
-            title: property.title,
-            text: `Mira esta propiedad: ${property.title}`,
-            url: window.location.href,
+            title: title,
+            text: `${title} - Brambila's`,
+            url: typeof window !== "undefined" ? window.location.href : "",
         }
 
         try {
             if (navigator.share) {
                 await navigator.share(shareData)
-            } else {
+            } else if (navigator.clipboard) {
                 await navigator.clipboard.writeText(window.location.href)
-                alert("Enlace copiado al portapapeles")
+                toast.success(t.property.linkCopied)
             }
         } catch (err) {
-            console.error("Error al compartir:", err)
+            console.error("Error sharing:", err)
         }
     }
 
@@ -115,10 +137,13 @@ export function PropertyDetailView({ property, globalConfig }: Props) {
                 return videoId ? `https://player.vimeo.com/video/${videoId}?autoplay=1&muted=1` : url
             }
             return url
-        } catch (e) {
+        } catch {
             return url
         }
     }
+
+    const whatsappNumber = globalConfig?.whatsapp?.replace(/\D/g, "") || "523330366666"
+    const whatsappText = t.property.whatsAppInterestMessage(title, property.code)
 
     return (
         <main className="min-h-screen bg-background text-foreground">
@@ -128,13 +153,11 @@ export function PropertyDetailView({ property, globalConfig }: Props) {
             <div className="relative h-[60vh] lg:h-[80vh] w-full mt-24">
                 <Image
                     src={`${property.image}?auto=format&fit=crop&w=1920&q=80`}
-                    alt={property.title}
+                    alt={title}
                     fill
                     sizes="100vw"
                     className="object-cover"
-
                     priority
-
                 />
                 <div className="absolute inset-0 bg-black/40" />
                 <div className="absolute bottom-0 left-0 right-0 p-8 lg:p-16 bg-gradient-to-t from-black/80 to-transparent">
@@ -144,19 +167,19 @@ export function PropertyDetailView({ property, globalConfig }: Props) {
                             className="inline-flex items-center gap-2 text-white/80 hover:text-white mb-6 text-sm tracking-widest uppercase transition-colors"
                         >
                             <ArrowLeft className="w-4 h-4" />
-                            Volver a propiedades
+                            {t.property.backToProperties}
                         </Link>
                         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
                             <div>
                                 <span className="px-4 py-2 bg-primary text-black text-xs font-bold tracking-widest uppercase mb-4 inline-block">
-                                    {property.tag}
+                                    {displayTag}
                                 </span>
                                 <h1 className="text-3xl md:text-4xl lg:text-5xl font-sans tracking-wide text-white mb-2 uppercase">
-                                    {property.title}
+                                    {title}
                                 </h1>
                                 <div className="flex items-center gap-2 text-white/90">
-                                    <MapPin className="w-5 h-5" />
-                                    <span className="text-lg font-light">{property.location}</span>
+                                    <MapPin className="w-5 h-5 text-primary" />
+                                    <span className="text-lg font-light">{location}</span>
                                 </div>
                             </div>
                             <div className="text-left lg:text-right flex flex-col items-start lg:items-end gap-4">
@@ -164,33 +187,48 @@ export function PropertyDetailView({ property, globalConfig }: Props) {
                                     <p className="text-3xl lg:text-4xl font-light text-primary">
                                         {formatPrice(property.price, property.currency)}
                                     </p>
-                                    {property.priceLabel && (
-                                        <p className="text-white/70 text-sm tracking-wider uppercase">{property.priceLabel}</p>
+                                    {priceLabel && (
+                                        <p className="text-white/70 text-sm tracking-wider uppercase">{priceLabel}</p>
                                     )}
                                 </div>
-                                <button
-                                    onClick={handleShare}
-                                    className="flex items-center gap-2 px-6 py-2 border border-white/30 hover:bg-white hover:text-black transition-all duration-300 text-sm tracking-widest uppercase text-white rounded-full bg-black/20 backdrop-blur-sm"
-                                >
-                                    <Share2 className="w-4 h-4" />
-                                    Compartir
-                                </button>
-                                {isClient && (
-                                    <PDFDownloadLink
-                                        document={<PropertyPDF property={property} qrCodeUrl={qrCodeUrl} globalConfig={globalConfig} />}
-                                        fileName={`ficha-${property.slug || 'propiedad'}.pdf`}
-                                        className="flex items-center gap-2 px-6 py-2 border border-white/30 hover:bg-white hover:text-black transition-all duration-300 text-sm tracking-widest uppercase text-white rounded-full bg-black/20 backdrop-blur-sm whitespace-nowrap"
+                                <div className="flex flex-wrap items-center gap-3">
+                                    <button
+                                        onClick={handleShare}
+                                        className="flex items-center gap-2 px-6 py-2 border border-white/30 hover:bg-white hover:text-black transition-all duration-300 text-sm tracking-widest uppercase text-white rounded-full bg-black/20 backdrop-blur-sm"
                                     >
-
-                                        {({ loading }) => (
-                                            <>
-                                                <FileDown className="w-4 h-4" />
-                                                {loading ? "Generando..." : "Descargar Ficha"}
-                                            </>
-                                        )}
-                                    </PDFDownloadLink>
-                                )}
-
+                                        <Share2 className="w-4 h-4" />
+                                        {t.property.share}
+                                    </button>
+                                    {isClient && (
+                                        <PDFDownloadLink
+                                            document={
+                                                <PropertyPDF
+                                                    property={{
+                                                        ...property,
+                                                        title,
+                                                        location,
+                                                        locationPDF: locationPDF || location,
+                                                        description,
+                                                        tag: displayTag,
+                                                        features
+                                                    }}
+                                                    qrCodeUrl={qrCodeUrl}
+                                                    globalConfig={globalConfig}
+                                                    language={language}
+                                                />
+                                            }
+                                            fileName={`ficha-${property.slug || 'propiedad'}.pdf`}
+                                            className="flex items-center gap-2 px-6 py-2 border border-white/30 hover:bg-white hover:text-black transition-all duration-300 text-sm tracking-widest uppercase text-white rounded-full bg-black/20 backdrop-blur-sm whitespace-nowrap"
+                                        >
+                                            {({ loading }) => (
+                                                <>
+                                                    <FileDown className="w-4 h-4" />
+                                                    {loading ? t.property.generatingSheet : t.property.downloadSheet}
+                                                </>
+                                            )}
+                                        </PDFDownloadLink>
+                                    )}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -207,7 +245,7 @@ export function PropertyDetailView({ property, globalConfig }: Props) {
                             {property.bedrooms !== undefined && (
                                 <div className="flex flex-col gap-2">
                                     <div className="flex items-center gap-2 text-muted-foreground text-sm uppercase tracking-wider">
-                                        <Bed className="w-4 h-4" /> Recámaras
+                                        <Bed className="w-4 h-4 text-primary" /> {t.property.bedrooms}
                                     </div>
                                     <span className="text-3xl font-light">{property.bedrooms}</span>
                                 </div>
@@ -215,7 +253,7 @@ export function PropertyDetailView({ property, globalConfig }: Props) {
                             {property.bathrooms !== undefined && (
                                 <div className="flex flex-col gap-2">
                                     <div className="flex items-center gap-2 text-muted-foreground text-sm uppercase tracking-wider">
-                                        <Bath className="w-4 h-4" /> Baños
+                                        <Bath className="w-4 h-4 text-primary" /> {t.property.bathrooms}
                                     </div>
                                     <span className="text-3xl font-light">{property.bathrooms}</span>
                                 </div>
@@ -223,7 +261,7 @@ export function PropertyDetailView({ property, globalConfig }: Props) {
                             {property.halfBathrooms !== undefined && (
                                 <div className="flex flex-col gap-2">
                                     <div className="flex items-center gap-2 text-muted-foreground text-sm uppercase tracking-wider">
-                                        <Bath className="w-4 h-4" /> Medios Baños
+                                        <Bath className="w-4 h-4 text-primary" /> {t.property.halfBathrooms}
                                     </div>
                                     <span className="text-3xl font-light">{property.halfBathrooms}</span>
                                 </div>
@@ -231,7 +269,7 @@ export function PropertyDetailView({ property, globalConfig }: Props) {
                             {(property.area) && (
                                 <div className="flex flex-col gap-2">
                                     <div className="flex items-center gap-2 text-muted-foreground text-sm uppercase tracking-wider">
-                                        <Maximize className="w-4 h-4" /> Construcción
+                                        <Maximize className="w-4 h-4 text-primary" /> {t.property.construction}
                                     </div>
                                     <span className="text-3xl font-light">{property.area}</span>
                                 </div>
@@ -239,7 +277,7 @@ export function PropertyDetailView({ property, globalConfig }: Props) {
                             {(property.landArea) && (
                                 <div className="flex flex-col gap-2">
                                     <div className="flex items-center gap-2 text-muted-foreground text-sm uppercase tracking-wider">
-                                        <LandPlot className="w-4 h-4" /> Terreno
+                                        <LandPlot className="w-4 h-4 text-primary" /> {t.property.land}
                                     </div>
                                     <span className="text-3xl font-light">{property.landArea}</span>
                                 </div>
@@ -247,7 +285,7 @@ export function PropertyDetailView({ property, globalConfig }: Props) {
                             {(property.levels !== undefined && property.levels > 0) && (
                                 <div className="flex flex-col gap-2">
                                     <div className="flex items-center gap-2 text-muted-foreground text-sm uppercase tracking-wider">
-                                        <Layers className="w-4 h-4" /> Niveles
+                                        <Layers className="w-4 h-4 text-primary" /> {t.property.levels}
                                     </div>
                                     <span className="text-3xl font-light">{property.levels}</span>
                                 </div>
@@ -255,34 +293,36 @@ export function PropertyDetailView({ property, globalConfig }: Props) {
                         </div>
 
                         {/* Description */}
-                        <div className="mb-16">
-                            <h2 className="text-2xl font-sans mb-6 uppercase tracking-wide">Descripción</h2>
-                            <div className="prose prose-invert max-w-none text-muted-foreground leading-relaxed whitespace-pre-line">
-                                {property.description}
-                                {property.measures && (
-                                    <div className="mt-8 bg-card p-8 border border-border">
-                                        <h3 className="text-lg text-foreground font-medium mb-4 flex items-center gap-2">
-                                            <Ruler className="w-5 h-5 text-primary" />
-                                            Medidas y Colindancias
-                                        </h3>
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                                            {property.measures.total && <p><strong className="text-foreground">Superficie Total:</strong> {property.measures.total}</p>}
-                                            {property.measures.north && <p><strong className="text-foreground">Norte:</strong> {property.measures.north}</p>}
-                                            {property.measures.south && <p><strong className="text-foreground">Sur:</strong> {property.measures.south}</p>}
-                                            {property.measures.east && <p><strong className="text-foreground">Oriente:</strong> {property.measures.east}</p>}
-                                            {property.measures.west && <p><strong className="text-foreground">Poniente:</strong> {property.measures.west}</p>}
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-
-                        {/* Features List (if available) */}
-                        {property.features && (
+                        {description && (
                             <div className="mb-16">
-                                <h2 className="text-2xl font-sans mb-6 uppercase tracking-wide">Amenidades y Características</h2>
+                                <h2 className="text-2xl font-sans mb-6 uppercase tracking-wide">{t.property.descriptionTitle}</h2>
+                                <div className="prose prose-invert max-w-none text-muted-foreground leading-relaxed whitespace-pre-line">
+                                    {description}
+                                    {property.measures && (
+                                        <div className="mt-8 bg-card p-8 border border-border">
+                                            <h3 className="text-lg text-foreground font-medium mb-4 flex items-center gap-2">
+                                                <Ruler className="w-5 h-5 text-primary" />
+                                                {t.property.measurementsTitle}
+                                            </h3>
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                                                {property.measures.total && <p><strong className="text-foreground">{t.property.surfaceTotal}</strong> {property.measures.total}</p>}
+                                                {property.measures.north && <p><strong className="text-foreground">{t.property.north}</strong> {property.measures.north}</p>}
+                                                {property.measures.south && <p><strong className="text-foreground">{t.property.south}</strong> {property.measures.south}</p>}
+                                                {property.measures.east && <p><strong className="text-foreground">{t.property.east}</strong> {property.measures.east}</p>}
+                                                {property.measures.west && <p><strong className="text-foreground">{t.property.west}</strong> {property.measures.west}</p>}
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Features List */}
+                        {features.length > 0 && (
+                            <div className="mb-16">
+                                <h2 className="text-2xl font-sans mb-6 uppercase tracking-wide">{t.property.amenitiesTitle}</h2>
                                 <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    {property.features.map((feature, i) => (
+                                    {features.map((feature, i) => (
                                         <li key={i} className="flex items-center gap-3 text-muted-foreground">
                                             <div className="w-1.5 h-1.5 bg-primary rounded-full" />
                                             {feature}
@@ -295,7 +335,7 @@ export function PropertyDetailView({ property, globalConfig }: Props) {
                         {/* Video Section */}
                         {hasVideo && (
                             <div className="mb-16">
-                                <h2 className="text-2xl font-sans mb-6 uppercase tracking-wide">Video Recorrido</h2>
+                                <h2 className="text-2xl font-sans mb-6 uppercase tracking-wide">{t.property.videoTourTitle}</h2>
                                 <div
                                     className="relative aspect-video w-full cursor-pointer group overflow-hidden rounded-lg bg-black"
                                     onClick={() => setShowVideo(true)}
@@ -335,15 +375,15 @@ export function PropertyDetailView({ property, globalConfig }: Props) {
                         {/* Gallery Section */}
                         {property.images && property.images.length > 0 && (
                             <div className="mb-16">
-                                <h2 className="text-2xl font-sans mb-6 uppercase tracking-wide">Galería</h2>
-                                <GalleryCarousel images={property.images} title={property.title} />
+                                <h2 className="text-2xl font-sans mb-6 uppercase tracking-wide">{t.property.galleryTitle}</h2>
+                                <GalleryCarousel images={property.images} title={title} />
                             </div>
                         )}
 
                         {/* Location Map */}
                         {(property.latitude && property.longitude) && (
                             <div className="mt-12 pt-8 border-t border-white/10">
-                                <h3 className="text-xl font-light text-white mb-6 tracking-wide">Ubicación</h3>
+                                <h3 className="text-xl font-light text-white mb-6 tracking-wide">{t.property.locationTitle}</h3>
                                 <div className="w-full aspect-video rounded-lg overflow-hidden bg-zinc-900 border border-white/10 relative">
                                     <iframe
                                         width="100%"
@@ -359,54 +399,52 @@ export function PropertyDetailView({ property, globalConfig }: Props) {
                                 </div>
                             </div>
                         )}
-
                     </div>
 
                     {/* Sidebar Details */}
                     <div className="lg:col-span-1 space-y-8">
-                        {/* Technical Details Card */}
                         <div className="bg-card border border-border p-8 sticky top-32">
-                            <h3 className="text-xl font-sans mb-6 uppercase tracking-wide border-b border-border pb-4">Detalles</h3>
+                            <h3 className="text-xl font-sans mb-6 uppercase tracking-wide border-b border-border pb-4">{t.property.detailsTitle}</h3>
                             <div className="space-y-4 text-sm">
                                 {property.code && (
                                     <div className="flex justify-between items-center py-2 border-b border-border/50">
-                                        <span className="text-muted-foreground">Código:</span>
+                                        <span className="text-muted-foreground">{t.property.code}</span>
                                         <span className="font-medium">{property.code}</span>
                                     </div>
                                 )}
-                                {property.sector && (
+                                {sector && (
                                     <div className="flex justify-between items-center py-2 border-b border-border/50">
-                                        <span className="text-muted-foreground">Sector:</span>
-                                        <span className="font-medium">{property.sector}</span>
+                                        <span className="text-muted-foreground">{t.property.sector}</span>
+                                        <span className="font-medium">{sector}</span>
                                     </div>
                                 )}
                                 <div className="flex justify-between items-center py-2 border-b border-border/50">
-                                    <span className="text-muted-foreground">Tipo:</span>
-                                    <span className="font-medium">{property.type}</span>
+                                    <span className="text-muted-foreground">{t.property.type}</span>
+                                    <span className="font-medium">{displayType}</span>
                                 </div>
                                 <div className="flex justify-between items-center py-2 border-b border-border/50">
-                                    <span className="text-muted-foreground">Operación:</span>
-                                    <span className="font-medium">{property.status}</span>
+                                    <span className="text-muted-foreground">{t.property.operation}</span>
+                                    <span className="font-medium">{displayStatus}</span>
                                 </div>
                                 <div className="flex justify-between items-center py-2 border-b border-border/50">
-                                    <span className="text-muted-foreground">Precio:</span>
+                                    <span className="text-muted-foreground">{t.property.price}</span>
                                     <span className="font-medium text-primary">{formatPrice(property.price, property.currency)}</span>
                                 </div>
-                                {property.condition && (
+                                {condition && (
                                     <div className="flex justify-between items-center py-2 border-b border-border/50">
-                                        <span className="text-muted-foreground">Condición:</span>
-                                        <span className="font-medium">{property.condition}</span>
+                                        <span className="text-muted-foreground">{t.property.condition}</span>
+                                        <span className="font-medium">{condition}</span>
                                     </div>
                                 )}
                             </div>
 
                             <Link
-                                href={`https://wa.me/523330366666?text=${encodeURIComponent(`Hola, estoy interesado en la propiedad: ${property.title} (Código: ${property.code || 'N/A'})`)}`}
+                                href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappText)}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="w-full mt-8 bg-primary text-black py-4 font-bold tracking-widest uppercase hover:bg-white transition-colors block text-center"
                             >
-                                Contactar Agente
+                                {t.property.contactAgent}
                             </Link>
                         </div>
                     </div>
@@ -461,7 +499,7 @@ export function PropertyDetailView({ property, globalConfig }: Props) {
 }
 
 function GalleryCarousel({ images, title }: { images: string[], title: string }) {
-    const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true })
+    const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, dragFree: true })
     const [selectedImage, setSelectedImage] = useState<string | null>(null)
 
     const scrollPrev = () => emblaApi && emblaApi.scrollPrev()
@@ -470,7 +508,7 @@ function GalleryCarousel({ images, title }: { images: string[], title: string })
     return (
         <>
             <div className="relative group">
-                <div className="overflow-hidden rounded-lg" ref={emblaRef}>
+                <div className="overflow-hidden rounded-lg touch-pan-y" ref={emblaRef}>
                     <div className="flex">
                         {images.map((img, index) => (
                             <div key={index} className="flex-[0_0_100%] min-w-0 md:flex-[0_0_50%] lg:flex-[0_0_33.33%] pl-4 first:pl-0">
@@ -480,7 +518,7 @@ function GalleryCarousel({ images, title }: { images: string[], title: string })
                                 >
                                     <Image
                                         src={img}
-                                        alt={`${title} - Imagen ${index + 1}`}
+                                        alt={`${title} - ${index + 1}`}
                                         fill
                                         className="object-cover hover:scale-105 transition-transform duration-700"
                                     />
@@ -496,12 +534,14 @@ function GalleryCarousel({ images, title }: { images: string[], title: string })
                         <button
                             className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/50 backdrop-blur-sm text-white flex items-center justify-center rounded-full transition-colors disabled:opacity-0 hover:bg-black/70"
                             onClick={scrollPrev}
+                            aria-label="Anterior"
                         >
                             <ArrowLeft className="w-5 h-5" />
                         </button>
                         <button
                             className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/50 backdrop-blur-sm text-white flex items-center justify-center rounded-full transition-colors disabled:opacity-0 hover:bg-black/70"
                             onClick={scrollNext}
+                            aria-label="Siguiente"
                         >
                             <ChevronRight className="w-5 h-5" />
                         </button>
@@ -518,6 +558,7 @@ function GalleryCarousel({ images, title }: { images: string[], title: string })
                     <button
                         className="absolute top-6 right-6 text-white/70 hover:text-white transition-colors"
                         onClick={() => setSelectedImage(null)}
+                        aria-label="Cerrar vista"
                     >
                         <X className="w-8 h-8" />
                     </button>

@@ -45,7 +45,7 @@ export default defineType({
         defineField({
             name: 'address',
             title: 'Dirección',
-            type: 'text',
+            type: 'localeText',
         }),
         defineField({
             name: 'socialLinks',
@@ -79,8 +79,8 @@ export default defineType({
                     fields: [
                         defineField({
                             name: 'label',
-                            title: 'Etiqueta',
-                            type: 'string',
+                            title: 'Etiqueta (ES / EN)',
+                            type: 'localeString',
                         }),
                         defineField({
                             name: 'href',
@@ -101,8 +101,8 @@ export default defineType({
                     fields: [
                         defineField({
                             name: 'label',
-                            title: 'Etiqueta',
-                            type: 'string',
+                            title: 'Etiqueta (ES / EN)',
+                            type: 'localeString',
                         }),
                         defineField({
                             name: 'href',
@@ -123,8 +123,8 @@ export default defineType({
                     fields: [
                         defineField({
                             name: 'label',
-                            title: 'Etiqueta',
-                            type: 'string',
+                            title: 'Etiqueta (ES / EN)',
+                            type: 'localeString',
                         }),
                         defineField({
                             name: 'href',
@@ -137,8 +137,8 @@ export default defineType({
         }),
         defineField({
             name: 'footerText',
-            title: 'Footer Text',
-            type: 'text',
+            title: 'Texto del Pie de Página (ES / EN)',
+            type: 'localeText',
         }),
     ],
 })

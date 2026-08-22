@@ -1,12 +1,13 @@
 /* eslint-disable jsx-a11y/alt-text */
 import { Document, Page, Text, View, Image, StyleSheet, Font } from "@react-pdf/renderer"
 import { formatPrice } from "@/lib/utils"
+import { Language } from "@/context/language-context"
+import { translations } from "@/lib/translations"
 
 // Register font
 Font.register({
     family: "Roboto",
     src: "https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Roboto/roboto-regular-webfont.ttf",
-
 })
 
 Font.register({
@@ -25,8 +26,8 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-        backgroundColor: "#1a1a1a", // Dark background for premium look
-        padding: 20, // Reduced padding
+        backgroundColor: "#1a1a1a",
+        padding: 20,
         color: "#ffffff",
     },
     companyInfo: {
@@ -34,9 +35,9 @@ const styles = StyleSheet.create({
         alignItems: "flex-end",
     },
     companyName: {
-        fontSize: 12, // Reduced
+        fontSize: 12,
         fontFamily: "Roboto-Bold",
-        color: "#D4AF37", // Gold
+        color: "#D4AF37",
         textTransform: "uppercase",
         marginBottom: 3,
     },
@@ -46,11 +47,11 @@ const styles = StyleSheet.create({
         marginBottom: 1,
     },
     content: {
-        padding: 20, // Reduced padding
+        padding: 20,
     },
     mainImage: {
         width: "100%",
-        height: 250, // Reduced height
+        height: 250,
         objectFit: "cover",
         marginBottom: 15,
     },
@@ -69,7 +70,7 @@ const styles = StyleSheet.create({
         letterSpacing: 1,
     },
     title: {
-        fontSize: 22, // Reduced
+        fontSize: 22,
         fontFamily: "Roboto-Bold",
         color: "#1a1a1a",
         textTransform: "uppercase",
@@ -83,8 +84,7 @@ const styles = StyleSheet.create({
     },
     location: {
         fontSize: 10,
-        color: "#1a1a1a", // Darker color for better visibility
-
+        color: "#1a1a1a",
         marginLeft: 0,
     },
     price: {
@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
         flexWrap: "wrap",
     },
     featureItem: {
-        width: "33.33%", // 3 columns for amenities to save space
+        width: "33.33%",
         fontSize: 8,
         color: "#555",
         marginBottom: 4,
@@ -189,8 +189,6 @@ const styles = StyleSheet.create({
         height: 40,
         objectFit: "contain",
     },
-
-
 })
 
 type Property = {
@@ -200,7 +198,6 @@ type Property = {
     locationPDF?: string
     price: string
     currency?: string
-
     tag: string
     image: string
     description?: string
@@ -216,8 +213,6 @@ type Property = {
     longitude?: number
 }
 
-
-
 type GlobalConfig = {
     email?: string
     phone?: string
@@ -227,9 +222,18 @@ type GlobalConfig = {
     logo?: string
 }
 
-
-export const PropertyPDF = ({ property, qrCodeUrl, globalConfig }: { property: Property; qrCodeUrl: string; globalConfig?: GlobalConfig }) => {
-    // Limit features to fit single page (3 columns x 3 rows = 9 features max roughly)
+export const PropertyPDF = ({
+    property,
+    qrCodeUrl,
+    globalConfig,
+    language = "es"
+}: {
+    property: Property
+    qrCodeUrl: string
+    globalConfig?: GlobalConfig
+    language?: Language
+}) => {
+    const t = translations[language]
     const formattedFeatures = property.features?.slice(0, 9) || []
 
     return (
@@ -243,13 +247,15 @@ export const PropertyPDF = ({ property, qrCodeUrl, globalConfig }: { property: P
                         ) : (
                             <View>
                                 <Text style={styles.brandName}>BRAMBILA'S</Text>
-                                <Text style={{ fontSize: 9, letterSpacing: 3, color: "#aaa" }}>INMOBILIARIA</Text>
+                                <Text style={{ fontSize: 9, letterSpacing: 3, color: "#aaa" }}>
+                                    {language === "en" ? "REAL ESTATE" : "INMOBILIARIA"}
+                                </Text>
                             </View>
                         )}
                     </View>
 
                     <View style={styles.companyInfo}>
-                        <Text style={styles.companyName}>Contacto</Text>
+                        <Text style={styles.companyName}>{t.pdf.contact}</Text>
                         <Text style={styles.companyDetails}>{globalConfig?.phone || "523330366666"}</Text>
                         <Text style={styles.companyDetails}>{globalConfig?.email || "contacto@brambilasinmobiliaria.com"}</Text>
                         <Text style={styles.companyDetails}>www.brambilasinmobiliaria.com</Text>
@@ -269,9 +275,6 @@ export const PropertyPDF = ({ property, qrCodeUrl, globalConfig }: { property: P
                             <Text style={styles.location}>{property.locationPDF || property.location}</Text>
                         </View>
 
-
-
-
                         <Text style={styles.price}>{formatPrice(property.price, property.currency)}</Text>
                     </View>
 
@@ -279,47 +282,46 @@ export const PropertyPDF = ({ property, qrCodeUrl, globalConfig }: { property: P
                     <View style={styles.grid}>
                         {property.bedrooms !== undefined && (
                             <View style={styles.gridItem}>
-                                <Text style={styles.gridLabel}>Recámaras</Text>
+                                <Text style={styles.gridLabel}>{t.pdf.specs.bedrooms}</Text>
                                 <Text style={styles.gridValue}>{property.bedrooms}</Text>
                             </View>
                         )}
                         {property.bathrooms !== undefined && (
                             <View style={styles.gridItem}>
-                                <Text style={styles.gridLabel}>Baños</Text>
+                                <Text style={styles.gridLabel}>{t.pdf.specs.bathrooms}</Text>
                                 <Text style={styles.gridValue}>{property.bathrooms}</Text>
                             </View>
                         )}
                         {property.halfBathrooms !== undefined && (
                             <View style={styles.gridItem}>
-                                <Text style={styles.gridLabel}>Medios Baños</Text>
+                                <Text style={styles.gridLabel}>{t.pdf.specs.halfBathrooms}</Text>
                                 <Text style={styles.gridValue}>{property.halfBathrooms}</Text>
                             </View>
                         )}
                         {property.area && (
                             <View style={styles.gridItem}>
-                                <Text style={styles.gridLabel}>Construcción</Text>
+                                <Text style={styles.gridLabel}>{t.pdf.specs.construction}</Text>
                                 <Text style={styles.gridValue}>{property.area}</Text>
                             </View>
                         )}
                         {property.landArea && (
                             <View style={styles.gridItem}>
-                                <Text style={styles.gridLabel}>Terreno</Text>
+                                <Text style={styles.gridLabel}>{t.pdf.specs.land}</Text>
                                 <Text style={styles.gridValue}>{property.landArea}</Text>
                             </View>
                         )}
                         {property.levels !== undefined && property.levels > 0 && (
                             <View style={styles.gridItem}>
-                                <Text style={styles.gridLabel}>Niveles</Text>
+                                <Text style={styles.gridLabel}>{t.pdf.specs.levels}</Text>
                                 <Text style={styles.gridValue}>{property.levels}</Text>
                             </View>
                         )}
-
                     </View>
 
-                    {/* Description - Ensure it's not too long */}
+                    {/* Description */}
                     {property.description && (
                         <View style={styles.section}>
-                            <Text style={styles.sectionTitle}>Descripción</Text>
+                            <Text style={styles.sectionTitle}>{t.pdf.description}</Text>
                             <Text style={styles.description}>
                                 {property.description.length > 450
                                     ? `${property.description.substring(0, 450)}...`
@@ -331,7 +333,7 @@ export const PropertyPDF = ({ property, qrCodeUrl, globalConfig }: { property: P
                     {/* Features */}
                     {formattedFeatures.length > 0 && (
                         <View style={styles.section}>
-                            <Text style={styles.sectionTitle}>Amenidades</Text>
+                            <Text style={styles.sectionTitle}>{t.pdf.amenities}</Text>
                             <View style={styles.features}>
                                 {formattedFeatures.map((feature, i) => (
                                     <Text key={i} style={styles.featureItem}>• {feature}</Text>
@@ -345,13 +347,13 @@ export const PropertyPDF = ({ property, qrCodeUrl, globalConfig }: { property: P
                 <View style={styles.footer}>
                     <View style={styles.footerContent}>
                         <Text style={{ ...styles.footerText, fontFamily: "Roboto-Bold", color: "#333", fontSize: 9 }}>
-                            ¿Te interesa esta propiedad?
+                            {t.pdf.interestedTitle}
                         </Text>
                         <Text style={styles.footerText}>
-                            Escanea el código QR para ver más detalles.
+                            {t.pdf.scanQrText}
                         </Text>
                         <Text style={{ ...styles.footerText, marginTop: 2 }}>
-                            {new Date().toLocaleDateString()}
+                            {new Date().toLocaleDateString(language === "en" ? "en-US" : "es-MX")}
                         </Text>
                     </View>
                     {qrCodeUrl && (

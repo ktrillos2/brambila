@@ -6,6 +6,9 @@ import { Phone, Mail, Facebook, Instagram, Twitter, Linkedin, Youtube, ArrowUp, 
 import { useEffect, useState } from "react"
 import { client } from "@/sanity/lib/client"
 import { GLOBAL_CONFIG_QUERY } from "@/sanity/lib/queries"
+import { useLanguage } from "@/context/language-context"
+import { translations } from "@/lib/translations"
+import { getLocalized } from "@/lib/sanity-i18n"
 
 type SocialLink = {
   platform: string;
@@ -13,7 +16,7 @@ type SocialLink = {
 }
 
 type MenuItem = {
-  label: string;
+  label: any;
   href: string;
 }
 
@@ -24,8 +27,8 @@ type GlobalConfig = {
   email: string;
   phone: string;
   whatsapp: string;
-  address: string;
-  footerText: string;
+  address: any;
+  footerText: any;
   socialLinks: SocialLink[];
   footerMenu: MenuItem[];
   legalMenu: MenuItem[];
@@ -34,6 +37,8 @@ type GlobalConfig = {
 export function Footer() {
   const [showScrollTop, setShowScrollTop] = useState(false)
   const [config, setConfig] = useState<GlobalConfig | null>(null)
+  const { language } = useLanguage()
+  const t = translations[language]
 
   useEffect(() => {
     const fetchConfig = async () => {
@@ -70,7 +75,10 @@ export function Footer() {
     }
   }
 
-  if (!config) return null // Or a loading skeleton
+  if (!config) return null
+
+  const footerText = getLocalized(config.footerText, language)
+  const address = getLocalized(config.address, language)
 
   return (
     <footer className="bg-card border-t border-border relative">
@@ -78,8 +86,9 @@ export function Footer() {
       <button
         type="button"
         onClick={scrollToTop}
-        className={`fixed bottom-14 left-4 md:left-8 w-12 h-12 bg-primary text-primary-foreground flex items-center justify-center z-50 transition-all duration-500 hover:bg-primary/90 hover:scale-110 ${showScrollTop ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4 pointer-events-none"
-          }`}
+        className={`fixed bottom-14 left-4 md:left-8 w-12 h-12 bg-primary text-primary-foreground flex items-center justify-center z-50 transition-all duration-500 hover:bg-primary/90 hover:scale-110 ${
+          showScrollTop ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4 pointer-events-none"
+        }`}
         aria-label="Volver arriba"
       >
         <ArrowUp className="w-5 h-5" />
@@ -100,66 +109,78 @@ export function Footer() {
                 />
               </div>
             </Link>
-            <p className="text-muted-foreground text-sm mb-6 leading-relaxed">
-              {config.footerText}
-            </p>
+            {footerText && (
+              <p className="text-muted-foreground text-sm mb-6 leading-relaxed">
+                {footerText}
+              </p>
+            )}
             <div className="space-y-3">
-              <a
-                href={`tel:${config.phone?.replace(/\s+/g, '')}`}
-                className="flex items-center gap-3 text-muted-foreground hover:text-primary transition-colors text-sm group/link"
-              >
-                <Phone className="h-4 w-4 group-hover/link:scale-110 transition-transform" />
-                {config.phone}
-              </a>
-              <a
-                href={`mailto:${config.email}`}
-                className="flex items-center gap-3 text-muted-foreground hover:text-primary transition-colors text-sm break-all group/link"
-              >
-                <Mail className="h-4 w-4 flex-shrink-0 group-hover/link:scale-110 transition-transform" />
-                {config.email}
-              </a>
+              {config.phone && (
+                <a
+                  href={`tel:${config.phone.replace(/\s+/g, '')}`}
+                  className="flex items-center gap-3 text-muted-foreground hover:text-primary transition-colors text-sm group/link"
+                >
+                  <Phone className="h-4 w-4 group-hover/link:scale-110 transition-transform" />
+                  {config.phone}
+                </a>
+              )}
+              {config.email && (
+                <a
+                  href={`mailto:${config.email}`}
+                  className="flex items-center gap-3 text-muted-foreground hover:text-primary transition-colors text-sm break-all group/link"
+                >
+                  <Mail className="h-4 w-4 flex-shrink-0 group-hover/link:scale-110 transition-transform" />
+                  {config.email}
+                </a>
+              )}
             </div>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h3 className="text-foreground font-semibold mb-6 text-sm tracking-wider uppercase">Enlaces Rápidos</h3>
+            <h3 className="text-foreground font-semibold mb-6 text-sm tracking-wider uppercase">{t.footer.quickLinks}</h3>
             <ul className="space-y-3">
-              {config.footerMenu?.map((link) => (
-                <li key={link.label}>
-                  <Link
-                    href={link.href}
-                    className="text-muted-foreground hover:text-primary transition-colors text-sm inline-flex items-center gap-2 group"
-                  >
-                    <span className="w-0 h-px bg-primary group-hover:w-4 transition-all duration-300" />
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
+              {config.footerMenu?.map((link, idx) => {
+                const label = getLocalized(link.label, language)
+                return (
+                  <li key={idx}>
+                    <Link
+                      href={link.href}
+                      className="text-muted-foreground hover:text-primary transition-colors text-sm inline-flex items-center gap-2 group"
+                    >
+                      <span className="w-0 h-px bg-primary group-hover:w-4 transition-all duration-300" />
+                      {label}
+                    </Link>
+                  </li>
+                )
+              })}
             </ul>
           </div>
 
           {/* Legal */}
           <div>
-            <h3 className="text-foreground font-semibold mb-6 text-sm tracking-wider uppercase">Legal</h3>
+            <h3 className="text-foreground font-semibold mb-6 text-sm tracking-wider uppercase">{t.footer.legal}</h3>
             <ul className="space-y-3">
-              {config.legalMenu?.map((link) => (
-                <li key={link.label}>
-                  <Link
-                    href={link.href}
-                    className="text-muted-foreground hover:text-primary transition-colors text-sm inline-flex items-center gap-2 group"
-                  >
-                    <span className="w-0 h-px bg-primary group-hover:w-4 transition-all duration-300" />
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
+              {config.legalMenu?.map((link, idx) => {
+                const label = getLocalized(link.label, language)
+                return (
+                  <li key={idx}>
+                    <Link
+                      href={link.href}
+                      className="text-muted-foreground hover:text-primary transition-colors text-sm inline-flex items-center gap-2 group"
+                    >
+                      <span className="w-0 h-px bg-primary group-hover:w-4 transition-all duration-300" />
+                      {label}
+                    </Link>
+                  </li>
+                )
+              })}
             </ul>
           </div>
 
           {/* Social */}
           <div>
-            <h3 className="text-foreground font-semibold mb-6 text-sm tracking-wider uppercase">Síguenos</h3>
+            <h3 className="text-foreground font-semibold mb-6 text-sm tracking-wider uppercase">{t.footer.followUs}</h3>
             <div className="flex gap-3">
               {config.socialLinks?.map((social) => {
                 const Icon = getSocialIcon(social.platform)
@@ -178,14 +199,14 @@ export function Footer() {
               })}
             </div>
 
-            {/* Newsletter or CTA */}
+            {/* CTA */}
             <div className="mt-8">
-              <p className="text-muted-foreground text-sm mb-4">¿Listo para encontrar tu hogar ideal?</p>
+              <p className="text-muted-foreground text-sm mb-4">{t.footer.readyQuestion}</p>
               <a
-                href="#contacto"
+                href="/#contacto"
                 className="inline-flex items-center gap-2 text-primary text-sm font-medium hover:underline group"
               >
-                Contáctanos hoy
+                {t.footer.contactToday}
                 <span className="group-hover:translate-x-1 transition-transform">→</span>
               </a>
             </div>
@@ -196,13 +217,15 @@ export function Footer() {
         <div className="py-6 border-t border-border">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-muted-foreground text-sm text-center md:text-left">
-              © {new Date().getFullYear()} {config.siteName}. Todos los derechos reservados.
+              © {new Date().getFullYear()} {config.siteName || "Brambila's"}. {t.footer.rights}
             </p>
             <div className="flex items-center gap-4">
-              <p className="text-muted-foreground text-sm flex items-center gap-2">
-                <span className="w-2 h-2 bg-primary rounded-full animate-pulse" />
-                {config.address}
-              </p>
+              {address && (
+                <p className="text-muted-foreground text-sm flex items-center gap-2">
+                  <span className="w-2 h-2 bg-primary rounded-full animate-pulse" />
+                  {address}
+                </p>
+              )}
               <span className="hidden md:inline text-muted-foreground">|</span>
               <a
                 href="https://www.kytcode.lat"

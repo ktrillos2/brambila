@@ -7,27 +7,23 @@ export default defineType({
     fields: [
         defineField({
             name: 'title',
-            title: 'Título Principal',
-            type: 'string',
-            initialValue: 'NUESTRA FILOSOFÍA',
+            title: 'Título Principal (ES / EN)',
+            type: 'localeString',
         }),
         defineField({
             name: 'mission',
-            title: 'Misión',
-            type: 'text',
-            rows: 3,
+            title: 'Misión (ES / EN)',
+            type: 'localeText',
         }),
         defineField({
             name: 'vision',
-            title: 'Visión',
-            type: 'text',
-            rows: 3,
+            title: 'Visión (ES / EN)',
+            type: 'localeText',
         }),
         defineField({
             name: 'values',
-            title: 'Valores',
-            type: 'array',
-            of: [{ type: 'string' }],
+            title: 'Valores (ES / EN)',
+            type: 'localeArray',
         }),
         defineField({
             name: 'image',
@@ -39,9 +35,8 @@ export default defineType({
         }),
         defineField({
             name: 'quote',
-            title: 'Cita Destacada',
-            type: 'text',
-            rows: 2,
+            title: 'Cita Destacada (ES / EN)',
+            type: 'localeText',
         }),
     ],
 })

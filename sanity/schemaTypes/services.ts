@@ -7,18 +7,18 @@ export default defineType({
     fields: [
         defineField({
             name: 'subtitle',
-            title: 'Subtítulo',
-            type: 'string',
+            title: 'Subtítulo (ES / EN)',
+            type: 'localeString',
         }),
         defineField({
             name: 'title',
-            title: 'Título',
-            type: 'string',
+            title: 'Título (ES / EN)',
+            type: 'localeString',
         }),
         defineField({
             name: 'description',
-            title: 'Descripción Principal',
-            type: 'text',
+            title: 'Descripción Principal (ES / EN)',
+            type: 'localeText',
         }),
         defineField({
             name: 'servicesList',
@@ -38,13 +38,13 @@ export default defineType({
                         }),
                         defineField({
                             name: 'title',
-                            title: 'Título del Servicio',
-                            type: 'string',
+                            title: 'Título del Servicio (ES / EN)',
+                            type: 'localeString',
                         }),
                         defineField({
                             name: 'description',
-                            title: 'Descripción',
-                            type: 'text',
+                            title: 'Descripción (ES / EN)',
+                            type: 'localeText',
                         }),
                     ],
                 },
