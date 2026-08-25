@@ -17,14 +17,14 @@ export default defineType({
             title: 'Tipos de Propiedad (ES / EN)',
             description: 'Lista de tipos de propiedad (ej: Casa / House, Terreno / Land)',
             type: 'array',
-            of: [{ type: 'localeString' }, { type: 'string' }],
+            of: [{ type: 'localeString' }],
         }),
         defineField({
             name: 'amenities',
             title: 'Amenidades Comunes (ES / EN)',
             description: 'Lista de amenidades sugeridas para las propiedades',
             type: 'array',
-            of: [{ type: 'localeString' }, { type: 'string' }],
+            of: [{ type: 'localeString' }],
         }),
     ],
     preview: {
