@@ -169,4 +169,31 @@ export default defineType({
             type: 'url',
         }),
     ],
+    preview: {
+        select: {
+            titleEs: 'title.es',
+            titleEn: 'title.en',
+            rawTitle: 'title',
+            price: 'price',
+            currency: 'currency',
+            media: 'mainImage',
+        },
+        prepare(selection) {
+            const { titleEs, titleEn, rawTitle, price, currency, media } = selection
+            const title =
+                titleEs ||
+                titleEn ||
+                (typeof rawTitle === 'string' ? rawTitle : '') ||
+                'Propiedad sin título'
+
+            const subtitle = price ? `${currency ? `${currency} ` : ''}${price}` : undefined
+
+            return {
+                title,
+                subtitle,
+                media,
+            }
+        },
+    },
 })
+
